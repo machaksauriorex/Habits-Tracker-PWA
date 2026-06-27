@@ -215,6 +215,92 @@ describe('Edición retroactiva antes de la creación', () => {
   })
 })
 
+describe('Máximo: un día vacío no cuenta como 0', () => {
+  it('día sin marcar NO se considera cumplido (hay que marcar 0 explícito)', () => {
+    const habitos = [mkHabito('h1', 'quantitative', 'daily', { createdAt: '2024-01-01T00:00:00.000Z' })]
+    const fases   = [mkFase('h1', '2024-01-01', 'max', 3)] // máx 3 cigarros/día
+    // Día 1 sin registro; hoy = 02 (día 1 ya cerrado)
+    const { saldo, rachas } = calcularHucha({ habitos, fases, registros: [], ajustes: AJUSTES, hoy: '2024-01-02' })
+    expect(saldo).toBe(0)
+    expect(rachas['h1'].actual).toBe(0)
+  })
+
+  it('marcar 0 explícito SÍ cuenta como cumplido (max)', () => {
+    const habitos = [mkHabito('h1', 'quantitative', 'daily', { createdAt: '2024-01-01T00:00:00.000Z' })]
+    const fases   = [mkFase('h1', '2024-01-01', 'max', 3)]
+    const registros = [{ habitId: 'h1', date: '2024-01-01', value: 0 }]
+    const { saldo, rachas } = calcularHucha({ habitos, fases, registros, ajustes: AJUSTES, hoy: '2024-01-02' })
+    expect(saldo).toBeCloseTo(1, 4) // base
+    expect(rachas['h1'].actual).toBe(1)
+  })
+})
+
+describe('Semanal "al menos": premia al instante', () => {
+  it('al alcanzar el objetivo a mitad de semana ya suma (no espera al domingo)', () => {
+    // Semana L01..D07 de 2024 (01/01 es lunes); hoy = miércoles 03
+    const habitos = [mkHabito('h1', 'quantitative', 'weekly', { createdAt: '2024-01-01T00:00:00.000Z' })]
+    const fases   = [mkFase('h1', '2024-01-01', 'min', 3)] // al menos 3/semana
+    const registros = [
+      { habitId: 'h1', date: '2024-01-01', value: 1 },
+      { habitId: 'h1', date: '2024-01-02', value: 1 },
+      { habitId: 'h1', date: '2024-01-03', value: 1 }, // total 3 ≥ 3
+    ]
+    const { saldo } = calcularHucha({ habitos, fases, registros, ajustes: AJUSTES, hoy: '2024-01-03' })
+    // Semana cumplida vale D=7 (equivalencia con diario), k=0
+    expect(saldo).toBeCloseTo((Math.pow(1.05, 7) - 1) / 0.05, 4)
+  })
+
+  it('si aún no llega al objetivo, la semana en curso no suma ni rompe la racha', () => {
+    const habitos = [mkHabito('h1', 'quantitative', 'weekly', { createdAt: '2024-01-01T00:00:00.000Z' })]
+    const fases   = [mkFase('h1', '2024-01-01', 'min', 3)]
+    const registros = [{ habitId: 'h1', date: '2024-01-01', value: 1 }] // 1/3
+    const { saldo, rachas } = calcularHucha({ habitos, fases, registros, ajustes: AJUSTES, hoy: '2024-01-03' })
+    expect(saldo).toBe(0)
+    expect(rachas['h1'].actual).toBe(0)
+  })
+})
+
+describe('Máximo: exige marcar TODOS los días del periodo', () => {
+  it('semanal con días sin marcar NO es válido (faltan registros)', () => {
+    // Semana 01-07 (cerrada, hoy=08); solo L,M,X marcados, J-D en blanco
+    const habitos = [mkHabito('h1', 'quantitative', 'weekly', { createdAt: '2024-01-01T00:00:00.000Z' })]
+    const fases   = [mkFase('h1', '2024-01-01', 'max', 5)]
+    const registros = [
+      { habitId: 'h1', date: '2024-01-01', value: 2 },
+      { habitId: 'h1', date: '2024-01-02', value: 1 },
+      { habitId: 'h1', date: '2024-01-03', value: 1 },
+    ]
+    const { saldo, rachas } = calcularHucha({ habitos, fases, registros, ajustes: AJUSTES, hoy: '2024-01-08' })
+    expect(saldo).toBe(0)
+    expect(rachas['h1'].actual).toBe(0)
+  })
+
+  it('marcando todos los días (incluido 0) SÍ es válido', () => {
+    const habitos = [mkHabito('h1', 'quantitative', 'weekly', { createdAt: '2024-01-01T00:00:00.000Z' })]
+    const fases   = [mkFase('h1', '2024-01-01', 'max', 5)]
+    const valores = [2, 1, 1, 0, 0, 0, 0] // total 4 ≤ 5, los 7 días marcados
+    const registros = valores.map((value, i) => ({
+      habitId: 'h1', date: `2024-01-0${i + 1}`, value,
+    }))
+    const { saldo, rachas } = calcularHucha({ habitos, fases, registros, ajustes: AJUSTES, hoy: '2024-01-08' })
+    expect(saldo).toBeGreaterThan(0)
+    expect(rachas['h1'].actual).toBe(1)
+  })
+})
+
+describe('Semanal "máximo": espera al cierre', () => {
+  it('aunque vaya por debajo del límite, no suma hasta que cierra la semana', () => {
+    const habitos = [mkHabito('h1', 'quantitative', 'weekly', { createdAt: '2024-01-01T00:00:00.000Z' })]
+    const fases   = [mkFase('h1', '2024-01-01', 'max', 10)]
+    const registros = [
+      { habitId: 'h1', date: '2024-01-01', value: 2 },
+      { habitId: 'h1', date: '2024-01-02', value: 1 }, // 3 ≤ 10 pero podría subir
+    ]
+    const { saldo } = calcularHucha({ habitos, fases, registros, ajustes: AJUSTES, hoy: '2024-01-03' })
+    expect(saldo).toBe(0) // semana abierta + máximo → pendiente
+  })
+})
+
 describe('Robustez de zona horaria (regresión)', () => {
   // Bug histórico: la aritmética de fechas mezclaba medianoche local con UTC,
   // y en España (UTC+1/+2) avanzar un día devolvía el MISMO día → bucle infinito

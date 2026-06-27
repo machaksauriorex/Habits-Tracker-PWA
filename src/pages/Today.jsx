@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { getHabits, getAllPhases, getAllRecords, getSettings, upsertRecord, deleteRecord } from '../db/index.js'
-import { calcularHucha, getActivePhase, getCurrentPeriodProgress } from '../utils/piggybank.js'
+import { calcularHucha, getActivePhase, getPeriodInfo } from '../utils/piggybank.js'
 import { PERIODO_LABELS } from '../utils/constants.js'
 
 // ── Helpers de fecha ─────────────────────────────────────────────────────────
@@ -168,17 +168,31 @@ export default function Today() {
 
   function cellInfo(habit, date) {
     const ps      = phasesByHabit[habit.id] ?? []
-    const phase   = getActivePhase(ps, date)
     const value   = recMap[`${habit.id}__${date}`]
     const hasVal  = value !== undefined && value !== null
     const isFuture = date > hoy
 
+    const phase = getActivePhase(ps, date)
+    const trackingStart = ps[0]?.startDate
+    // Hábitos de "máximo": cada día ya pasado debe marcarse (aunque sea 0). Un día
+    // en blanco invalida la racha, así que se señala para que el usuario lo rellene.
+    const missing = phase?.goalType === 'max'
+      && !hasVal && !isFuture && !!trackingStart && date >= trackingStart
+
     let done = false
-    if (hasVal && phase) {
-      done = phase.goalType === 'min' ? value >= phase.goalValue : value <= phase.goalValue
+    if (habit.periodo === 'daily') {
+      // Diario: el día se cumple comparando su propio valor con el objetivo.
+      if (hasVal && phase) {
+        done = phase.goalType === 'min' ? value >= phase.goalValue : value <= phase.goalValue
+      }
+    } else {
+      // Semanal/mensual: el día se pinta "cumplido" cuando TODO el periodo
+      // (la semana/el mes que lo contiene) ya está cumplido.
+      const info = getPeriodInfo(habit, ps, recMap, date, hoy)
+      done = !!info?.cumplido
     }
 
-    return { value, hasVal, done, phase, isFuture }
+    return { value, hasVal, done, isFuture, missing }
   }
 
   const activeHabits = allHabits.filter(h => h.status === 'active')
@@ -240,8 +254,9 @@ export default function Today() {
         <ul className="habit-rows">
           {activeHabits.map(habit => {
             const ps = phasesByHabit[habit.id] ?? []
+            // Progreso del periodo de la SEMANA VISIBLE (no siempre la actual)
             const progress = habit.periodo !== 'daily'
-              ? getCurrentPeriodProgress(habit, ps, recMap, hoy)
+              ? getPeriodInfo(habit, ps, recMap, weekDays[0], hoy)
               : null
 
             return (
@@ -255,7 +270,7 @@ export default function Today() {
                     </span>
                     {progress && (
                       <span className="period-progress">
-                        {progress.actual}/{progress.goal} {PERIODO_LABELS[habit.periodo].toLowerCase()}
+                        {progress.goalType === 'max' ? '≤' : ''}{progress.total}/{progress.goal} {PERIODO_LABELS[habit.periodo].toLowerCase()}
                       </span>
                     )}
                   </div>
@@ -263,22 +278,22 @@ export default function Today() {
 
                 {/* Celdas de días */}
                 {weekDays.map(date => {
-                  const { value, hasVal, done, isFuture } = cellInfo(habit, date)
+                  const { value, hasVal, done, isFuture, missing } = cellInfo(habit, date)
 
                   return (
                     <button
                       key={date}
                       className={[
                         'day-cell',
-                        done ? 'done' : hasVal ? 'partial' : '',
+                        done ? 'done' : hasVal ? 'partial' : missing ? 'missing' : '',
                         date === hoy ? 'today' : '',
                         isFuture ? 'inactive' : '',
                       ].filter(Boolean).join(' ')}
-                      style={done ? { background: habit.color, borderColor: habit.color } : { borderColor: habit.color + '55' }}
+                      style={done ? { background: habit.color, borderColor: habit.color } : missing ? undefined : { borderColor: habit.color + '55' }}
                       onClick={() => !isFuture && handleCellTap(habit, date)}
                       disabled={isFuture}
                     >
-                      {habit.tipo === 'quantitative' && hasVal ? value : ''}
+                      {habit.tipo === 'quantitative' && hasVal ? value : missing ? '0?' : ''}
                     </button>
                   )
                 })}

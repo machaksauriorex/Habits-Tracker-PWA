@@ -9,7 +9,11 @@ import {
 import { HABIT_COLORS, PERIODO_LABELS } from '../utils/constants.js'
 import ConfirmDialog from './ConfirmDialog.jsx'
 
-const todayStr = () => new Date().toISOString().split('T')[0]
+const todayStr = () => {
+  // Fecha LOCAL (no UTC) para que la fase por defecto empiece en el día correcto
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
 
 function makePhase() {
   return { _key: crypto.randomUUID(), startDate: todayStr(), goalType: 'min', goalValue: '' }
@@ -48,6 +52,17 @@ export default function HabitForm({ habit, onSave, onBack }) {
 
   function setField(key, value) {
     setForm(prev => ({ ...prev, [key]: value }))
+    setError('')
+  }
+
+  // Los hábitos Sí/No son siempre diarios y de tipo "hacerlo" (mínimo):
+  // al elegir Sí/No se fuerza periodo=diario y todas las fases a objetivo mínimo.
+  function setTipo(tipo) {
+    if (isEditing) return
+    setForm(prev => ({ ...prev, tipo, periodo: tipo === 'boolean' ? 'daily' : prev.periodo }))
+    if (tipo === 'boolean') {
+      setPhases(prev => prev.map(p => ({ ...p, goalType: 'min' })))
+    }
     setError('')
   }
 
@@ -172,14 +187,14 @@ export default function HabitForm({ habit, onSave, onBack }) {
             <button
               type="button"
               className={form.tipo === 'boolean' ? 'active' : ''}
-              onClick={() => !isEditing && setField('tipo', 'boolean')}
+              onClick={() => setTipo('boolean')}
             >
               Sí / No
             </button>
             <button
               type="button"
               className={form.tipo === 'quantitative' ? 'active' : ''}
-              onClick={() => !isEditing && setField('tipo', 'quantitative')}
+              onClick={() => setTipo('quantitative')}
             >
               Número
             </button>
@@ -193,25 +208,27 @@ export default function HabitForm({ habit, onSave, onBack }) {
           </p>
         </div>
 
-        {/* Periodo */}
-        <div className="form-group">
-          <label>Periodo</label>
-          <div className={`btn-group${isEditing ? ' disabled' : ''}`}>
-            {Object.entries(PERIODO_LABELS).map(([val, label]) => (
-              <button
-                key={val}
-                type="button"
-                className={form.periodo === val ? 'active' : ''}
-                onClick={() => !isEditing && setField('periodo', val)}
-              >
-                {label}
-              </button>
-            ))}
+        {/* Periodo (solo para cuantitativos; los Sí/No son siempre diarios) */}
+        {form.tipo === 'quantitative' && (
+          <div className="form-group">
+            <label>Periodo</label>
+            <div className={`btn-group${isEditing ? ' disabled' : ''}`}>
+              {Object.entries(PERIODO_LABELS).map(([val, label]) => (
+                <button
+                  key={val}
+                  type="button"
+                  className={form.periodo === val ? 'active' : ''}
+                  onClick={() => !isEditing && setField('periodo', val)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {isEditing && (
+              <p className="form-hint">El periodo no cambia una vez creado el hábito.</p>
+            )}
           </div>
-          {isEditing && (
-            <p className="form-hint">El periodo no cambia una vez creado el hábito.</p>
-          )}
-        </div>
+        )}
 
         {/* Fases / Objetivo */}
         <div className="form-group">
@@ -241,39 +258,42 @@ export default function HabitForm({ habit, onSave, onBack }) {
                 />
               </div>
 
-              <div className="form-group-inline">
-                <label>Tipo</label>
-                <div className="btn-group">
-                  <button
-                    type="button"
-                    className={phase.goalType === 'min' ? 'active' : ''}
-                    onClick={() => updatePhaseField(phase._key, 'goalType', 'min')}
-                  >
-                    {form.tipo === 'boolean' ? 'Hacerlo' : 'Mínimo'}
-                  </button>
-                  <button
-                    type="button"
-                    className={phase.goalType === 'max' ? 'active' : ''}
-                    onClick={() => updatePhaseField(phase._key, 'goalType', 'max')}
-                  >
-                    {form.tipo === 'boolean' ? 'No hacerlo' : 'Máximo'}
-                  </button>
-                </div>
-              </div>
-
+              {/* Mínimo/Máximo solo en cuantitativos; los Sí/No son siempre "hacerlo" */}
               {form.tipo === 'quantitative' && (
-                <div className="form-group-inline">
-                  <label>{phase.goalType === 'min' ? 'Al menos' : 'No más de'}</label>
-                  <input
-                    type="number"
-                    value={phase.goalValue}
-                    min={0}
-                    step={1}
-                    onChange={e => updatePhaseField(phase._key, 'goalValue', e.target.value)}
-                    className="number-input"
-                    placeholder="0"
-                  />
-                </div>
+                <>
+                  <div className="form-group-inline">
+                    <label>Tipo</label>
+                    <div className="btn-group">
+                      <button
+                        type="button"
+                        className={phase.goalType === 'min' ? 'active' : ''}
+                        onClick={() => updatePhaseField(phase._key, 'goalType', 'min')}
+                      >
+                        Mínimo
+                      </button>
+                      <button
+                        type="button"
+                        className={phase.goalType === 'max' ? 'active' : ''}
+                        onClick={() => updatePhaseField(phase._key, 'goalType', 'max')}
+                      >
+                        Máximo
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="form-group-inline">
+                    <label>{phase.goalType === 'min' ? 'Al menos' : 'No más de'}</label>
+                    <input
+                      type="number"
+                      value={phase.goalValue}
+                      min={0}
+                      step={1}
+                      onChange={e => updatePhaseField(phase._key, 'goalValue', e.target.value)}
+                      className="number-input"
+                      placeholder="0"
+                    />
+                  </div>
+                </>
               )}
             </div>
           ))}

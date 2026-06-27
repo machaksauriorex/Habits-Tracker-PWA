@@ -51,23 +51,24 @@ function calcAportacion(base, r, k, D) {
   return base * Math.pow(1 + r, k) * (Math.pow(1 + r, D) - 1) / r
 }
 
-/** ¿Cumple el valor el objetivo? */
-function esCumplido(value, goalType, goalValue) {
-  return goalType === 'min' ? value >= goalValue : value <= goalValue
+function pad2(n) {
+  return String(n).padStart(2, '0')
 }
 
 // ── Generadores de periodos ──────────────────────────────────────────────────
 
 /**
- * Devuelve los periodos del hábito hasta `hoy`.
- * - Diario: incluye HOY como periodo "abierto" (premia al instante si se cumple,
- *   pero no penaliza hasta que el día se cierra).
- * - Semanal/mensual: solo periodos CERRADOS (el actual solo muestra progreso).
- * `start` es la fecha de inicio del seguimiento (puede ser anterior a la
- * creación si hay registros retroactivos). Cada periodo: { startDate, endDate, days, abierto }
+ * Devuelve los periodos del hábito hasta `hoy`, incluido el periodo EN CURSO
+ * (marcado con `abierto: true`). Un periodo abierto premia al instante si el
+ * objetivo es "al menos" y ya se cumple, pero nunca penaliza hasta que se cierra.
+ * `start` es la fecha de inicio del seguimiento (puede ser anterior a la creación
+ * si hay registros retroactivos). Cada periodo: { startDate, endDate, days, abierto }.
+ * `days` (D) es el nº de días ACTIVOS del periodo completo (no se recorta a hoy):
+ * una semana/mes cumplido vale el periodo entero aunque se complete antes de tiempo.
  */
 function getPeriods(habito, hoy, start) {
-  const end = habito.archivedAt ? habito.archivedAt.split('T')[0] : hoy
+  const archivedEnd = habito.archivedAt ? habito.archivedAt.split('T')[0] : null
+  const end = archivedEnd ?? hoy // tope del diario (hoy si está activo)
   const periods = []
 
   if (habito.periodo === 'daily') {
@@ -79,18 +80,18 @@ function getPeriods(habito, hoy, start) {
     }
 
   } else if (habito.periodo === 'weekly') {
-    // Semanas L–D. La semana actual (contiene hoy) no se evalúa aún.
+    // Semanas L–D, incluida la que contiene hoy (abierta).
     let weekStart = getMonday(start)
-    while (true) {
-      const weekEnd = addDays(weekStart, 6)
-      if (weekEnd >= hoy) break           // semana no cerrada aún
-      if (weekStart > end) break
+    while (weekStart <= hoy) {
+      if (archivedEnd && weekStart > archivedEnd) break
 
+      const weekEnd  = addDays(weekStart, 6)
       const effStart = weekStart < start ? start : weekStart
-      const effEnd   = weekEnd   > end   ? end   : weekEnd
-      const days = daysBetween(effStart, effEnd) + 1
+      const effEnd   = archivedEnd && archivedEnd < weekEnd ? archivedEnd : weekEnd
+      const days     = daysBetween(effStart, effEnd) + 1
+      const abierto  = weekEnd >= hoy
 
-      periods.push({ startDate: effStart, endDate: weekEnd, days })
+      periods.push({ startDate: effStart, endDate: weekEnd, days, abierto })
       weekStart = addDays(weekStart, 7)
     }
 
@@ -101,17 +102,18 @@ function getPeriods(habito, hoy, start) {
 
     while (true) {
       const dim    = daysInMonth(year, month)
-      const mStart = `${year}-${String(month).padStart(2, '0')}-01`
-      const mEnd   = `${year}-${String(month).padStart(2, '0')}-${String(dim).padStart(2, '0')}`
+      const mStart = `${year}-${pad2(month)}-01`
+      const mEnd   = `${year}-${pad2(month)}-${pad2(dim)}`
 
-      if (mEnd >= hoy) break
-      if (mStart > end) break
+      if (mStart > hoy) break                        // mes futuro
+      if (archivedEnd && mStart > archivedEnd) break // archivado antes de este mes
 
       const effStart = mStart < start ? start : mStart
-      const effEnd   = mEnd   > end   ? end   : mEnd
-      const days = daysBetween(effStart, effEnd) + 1
+      const effEnd   = archivedEnd && archivedEnd < mEnd ? archivedEnd : mEnd
+      const days     = daysBetween(effStart, effEnd) + 1
+      const abierto  = mEnd >= hoy
 
-      periods.push({ startDate: effStart, endDate: mEnd, days })
+      periods.push({ startDate: effStart, endDate: mEnd, days, abierto })
 
       month++
       if (month > 12) { month = 1; year++ }
@@ -121,44 +123,76 @@ function getPeriods(habito, hoy, start) {
   return periods
 }
 
-// ── Valor agregado de un periodo ─────────────────────────────────────────────
+// ── Evaluación de un periodo ──────────────────────────────────────────────────
 
-function getAggregateValue(habito, period, recMap) {
+/**
+ * Agrega los registros del periodo y decide si está cumplido.
+ * Objetivo "max" (límite, p.ej. máx 3 cigarros): TODOS los días activos ya pasados
+ * deben estar registrados explícitamente (aunque sea 0); si falta alguno, el
+ * periodo NO es válido (un día en blanco es ambiguo). Objetivo "min": basta con
+ * alcanzar el total (los días sin marcar cuentan como 0).
+ * `days` (opcional) acota el rango activo a [startDate, startDate+days-1].
+ */
+function evalPeriodo(habito, period, recMap, phase, hoy) {
+  const lastActive = period.days != null
+    ? addDays(period.startDate, period.days - 1)
+    : period.endDate
   let total = 0
+  let faltan = 0 // días activos ya pasados SIN registrar (relevante para "max")
   let d = period.startDate
-  while (d <= period.endDate) {
+  while (d <= lastActive) {
     const val = recMap[`${habito.id}__${d}`]
     if (val !== undefined) {
       total += habito.tipo === 'boolean' ? (val ? 1 : 0) : Number(val)
+    } else if (!hoy || d <= hoy) {
+      faltan++
     }
     d = addDays(d, 1)
   }
-  return total
+  const cumplido = phase.goalType === 'max'
+    ? (faltan === 0 && total <= phase.goalValue)
+    : total >= phase.goalValue
+  return { cumplido, total, faltan }
 }
 
-// ── Progreso del periodo actual (para la UI) ──────────────────────────────────
+// ── Info del periodo para la UI ───────────────────────────────────────────────
 
 /**
- * Para hábitos semanales/mensuales: devuelve { actual, goal } del periodo en curso.
+ * Info del periodo (semana/mes) que CONTIENE `refDate`, para hábitos no diarios:
+ * { total, goal, cumplido, goalType, periodStart, periodEnd }.
+ * Permite a la pantalla "Hoy" mostrar el progreso de la semana VISIBLE (no siempre
+ * la actual) y pintar todos los días del periodo cuando ya está cumplido.
  */
-export function getCurrentPeriodProgress(habito, phases, recMap, hoy) {
+export function getPeriodInfo(habito, phases, recMap, refDate, hoy) {
+  if (habito.periodo === 'daily') return null
+  const today = hoy ?? new Date().toISOString().split('T')[0]
   const sortedPhases = [...phases].sort((a, b) => a.startDate.localeCompare(b.startDate))
-  const phase = getActivePhase(sortedPhases, hoy)
+  const phase = getActivePhase(sortedPhases, refDate)
   if (!phase) return null
 
-  let periodStart
+  let periodStart, periodEnd
   if (habito.periodo === 'weekly') {
-    periodStart = getMonday(hoy)
-  } else if (habito.periodo === 'monthly') {
-    const d = new Date(hoy + 'T00:00:00Z')
+    periodStart = getMonday(refDate)
+    periodEnd   = addDays(periodStart, 6)
+  } else { // monthly
+    const d = new Date(refDate + 'T00:00:00Z')
     const y = d.getUTCFullYear(), m = d.getUTCMonth() + 1
-    periodStart = `${y}-${String(m).padStart(2, '0')}-01`
-  } else {
-    return null // daily no necesita progreso de periodo
+    periodStart = `${y}-${pad2(m)}-01`
+    periodEnd   = `${y}-${pad2(m)}-${pad2(daysInMonth(y, m))}`
   }
 
-  const value = getAggregateValue(habito, { startDate: periodStart, endDate: hoy }, recMap)
-  return { actual: value, goal: phase.goalValue }
+  // Acota el inicio activo al comienzo del seguimiento (primera fase): no se
+  // exigen días anteriores a que existiera el hábito.
+  const trackingStart = sortedPhases[0].startDate
+  const activeStart = periodStart < trackingStart ? trackingStart : periodStart
+
+  const { cumplido, total, faltan } = evalPeriodo(
+    habito, { startDate: activeStart, endDate: periodEnd }, recMap, phase, today)
+  const abierto = periodEnd >= today
+  // El "cumplido visual" sigue la misma regla que la hucha: el "máximo" no se da
+  // por cumplido hasta cerrar el periodo (aún podría superarse).
+  const cumplidoVisual = cumplido && (phase.goalType === 'min' || !abierto)
+  return { total, goal: phase.goalValue, cumplido: cumplidoVisual, goalType: phase.goalType, abierto, faltan, periodStart, periodEnd }
 }
 
 // ── Función principal ────────────────────────────────────────────────────────
@@ -225,11 +259,15 @@ export function calcularHucha({ habitos, fases, registros, ajustes, hoy: hoyPara
     const phase = getActivePhase(phases, period.startDate)
     if (!phase) continue
 
-    const value    = getAggregateValue(habito, period, recMap)
-    const cumplido = esCumplido(value, phase.goalType, phase.goalValue)
-    const D        = period.days
+    const { cumplido } = evalPeriodo(habito, period, recMap, phase, hoy)
+    const D            = period.days
 
-    if (cumplido) {
+    // Un periodo en curso (abierto) solo premia al instante si el objetivo es
+    // "al menos" (min) y ya se ha alcanzado; los de "máximo" esperan al cierre
+    // (aún podrían superarse). Diario, semanal y mensual comparten esta regla.
+    const premiaAhora = cumplido && (!period.abierto || phase.goalType === 'min')
+
+    if (premiaAhora) {
       const aportacion = calcAportacion(base, r, st.k, D)
       saldo += aportacion
       movimientos.push({

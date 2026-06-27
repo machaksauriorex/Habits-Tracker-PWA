@@ -203,6 +203,15 @@
   cursor: default;
 }
 
+/* Hábito de "máximo" con un día sin marcar: hay que poner 0 (invalida la racha) */
+.day-cell.missing {
+  border-style: dashed;
+  border-color: #f59e0b;
+  color: #f59e0b;
+  font-size: 10px;
+  font-weight: 700;
+}
+
 .day-cell:not(.inactive):active {
   opacity: 0.7;
 }

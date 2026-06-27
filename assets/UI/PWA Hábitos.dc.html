@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Space Grotesk', -apple-system, sans-serif; margin: 0; }
+  @keyframes waveShift { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
+  @keyframes blobMorph {
+    0%,100% { border-radius:56% 44% 36% 64% / 52% 38% 62% 48%; }
+    20%     { border-radius:40% 60% 52% 48% / 38% 56% 44% 62%; }
+    40%     { border-radius:64% 36% 44% 56% / 58% 44% 56% 42%; }
+    60%     { border-radius:44% 56% 60% 40% / 46% 62% 38% 54%; }
+    80%     { border-radius:52% 48% 40% 60% / 60% 34% 66% 40%; }
+  }
+  @keyframes floatA { 0%,100% { transform:translate(0,0); } 50% { transform:translate(4px,-6px); } }
+  @keyframes floatB { 0%,100% { transform:translate(0,0); } 50% { transform:translate(-5px,5px); } }
+  @keyframes floatC { 0%,100% { transform:translate(0,0); } 50% { transform:translate(5px,3px); } }
+</style>
+</helmet>
+
+<div style="width:max-content;min-width:100%;min-height:100vh;background:#e7e5df;padding:56px;box-sizing:border-box">
+
+<!-- tokens strip -->
+<div style="display:flex;align-items:center;gap:32px;margin-bottom:56px;padding:20px 24px;background:rgba(0,0,0,.05);border-radius:12px">
+  <div style="display:flex;gap:8px;align-items:center">
+    <div style="width:28px;height:28px;border-radius:8px;background:#14161A;box-shadow:0 0 0 1px rgba(0,0,0,.2)"></div>
+    <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25"></div>
+    <div style="width:28px;height:28px;border-radius:8px;background:#242832"></div>
+    <div style="width:28px;height:28px;border-radius:8px;background:#2C313B"></div>
+    <div style="width:28px;height:28px;border-radius:8px;background:#8A909C"></div>
+    <div style="width:28px;height:28px;border-radius:8px;background:#ECEEF2"></div>
+    <div style="width:2px;height:24px;background:rgba(0,0,0,.15);margin:0 4px"></div>
+    <div style="width:28px;height:28px;border-radius:8px;background:#E9C46A;box-shadow:0 2px 8px rgba(233,196,106,.4)"></div>
+    <div style="width:2px;height:24px;background:rgba(0,0,0,.15);margin:0 4px"></div>
+    <div style="width:20px;height:20px;border-radius:50%;background:#4A9EFF"></div>
+    <div style="width:20px;height:20px;border-radius:50%;background:#9B7AE8"></div>
+    <div style="width:20px;height:20px;border-radius:50%;background:#F97316"></div>
+    <div style="width:20px;height:20px;border-radius:50%;background:#38BDF8"></div>
+    <div style="width:20px;height:20px;border-radius:50%;background:#818CF8"></div>
+  </div>
+  <div style="display:flex;gap:24px;align-items:baseline">
+    <span style="font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:#1a1a1a;letter-spacing:-2px">22,85 €</span>
+    <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:500;color:#555">Space Grotesk · display</span>
+    <span style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:400;color:#777">cuerpo 14px · captions 11px</span>
+  </div>
+</div>
+
+<!-- ═══ 01 — PANTALLA PRINCIPAL ═══ -->
+<div style="margin-bottom:32px">
+  <div style="display:flex;align-items:baseline;gap:12px">
+    <span style="font-size:11px;font-weight:700;color:#C9A640;letter-spacing:.12em">01</span>
+    <span style="font-size:22px;font-weight:700;color:#1a1a1a">Pantalla principal</span>
+    <span style="font-size:14px;color:#888">— cuadrícula 7 días · sin emoji</span>
+  </div>
+</div>
+
+<div style="display:flex;gap:48px;align-items:flex-start;margin-bottom:88px">
+
+<!-- ── FRAME A: Precisión ── -->
+<div style="flex:none">
+  <p style="font-size:11px;font-weight:600;color:#666;margin:0 0 14px;letter-spacing:.07em;text-transform:uppercase">A — Precisión · lista</p>
+  <div style="width:390px;height:812px;border-radius:44px;overflow:hidden;background:#14161A;box-shadow:0 28px 72px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06);position:relative">
+
+    <div style="height:44px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <span style="font-size:15px;font-weight:600;color:#ECEEF2">22:30</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="5" width="3" height="6" rx="1" fill="#ECEEF2"/><rect x="4.5" y="3" width="3" height="8" rx="1" fill="#ECEEF2"/><rect x="9" y="0" width="3" height="11" rx="1" fill="#ECEEF2"/></svg>
+        <svg width="15" height="11" viewBox="0 0 15 11" fill="none" stroke="#ECEEF2" stroke-width="1.5" stroke-linecap="round"><path d="M.5 3.5C3 1 12 1 14.5 3.5"/><path d="M3 6.5C5 5 10 5 12 6.5"/><circle cx="7.5" cy="10" r="1" fill="#ECEEF2" stroke="none"/></svg>
+        <svg width="23" height="11" viewBox="0 0 23 11"><rect x=".5" y=".5" width="19" height="10" rx="2.5" stroke="#ECEEF2" stroke-opacity=".4"/><rect x="20.5" y="3" width="2" height="5" rx="1" fill="#ECEEF2" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.5" fill="#ECEEF2"/></svg>
+      </div>
+    </div>
+
+    <div style="padding:16px 24px 14px;border-bottom:1px solid #2C313B">
+      <div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#8A909C;margin-bottom:4px">Saldo acumulado</div>
+      <div style="display:flex;align-items:baseline;gap:6px;line-height:1">
+        <span style="font-size:52px;font-weight:700;color:#ECEEF2;letter-spacing:-3px">22,85</span>
+        <span style="font-size:26px;font-weight:500;color:#ECEEF2;letter-spacing:-1px">€</span>
+      </div>
+      <div style="margin-top:10px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:13px;font-weight:600;color:#5CC87A">↑ +1,80 € hoy</span>
+        <div style="width:1px;height:12px;background:#2C313B"></div>
+        <span style="font-size:13px;color:#8A909C">racha · 4 días</span>
+      </div>
+    </div>
+
+    <!-- day headers: L M X J V S(today) D -->
+    <div style="display:flex;align-items:center;padding:10px 16px 6px">
+      <div style="flex:1"></div>
+      <div style="display:flex;gap:3px">
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#8A909C">L</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#8A909C">M</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#8A909C">X</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#8A909C">J</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#8A909C">V</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:700;color:#E9C46A">S</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#3A3F4A">D</div>
+      </div>
+    </div>
+
+    <!-- Agua: L8 M8 X6 J✗ V8 S5· D- -->
+    <div style="display:flex;align-items:center;padding:9px 16px;border-bottom:1px solid #2C313B">
+      <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+        <div style="width:3px;height:28px;border-radius:2px;background:#4A9EFF;flex-shrink:0"></div>
+        <div><div style="font-size:14px;font-weight:500;color:#ECEEF2">Agua</div><div style="font-size:11px;color:#8A909C">mín. 8 vasos</div></div>
+      </div>
+      <div style="display:flex;gap:3px;flex-shrink:0">
+        <div style="width:28px;height:28px;border-radius:8px;background:#4A9EFF;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#fff">8</span></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#4A9EFF;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#fff">8</span></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(74,158,255,.38);display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:rgba(255,255,255,.75)">6</span></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25;border:1px solid #2C313B"></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#4A9EFF;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#fff">8</span></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(74,158,255,.55);border:1.5px solid #4A9EFF;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#fff">5</span></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25;opacity:.3"></div>
+      </div>
+    </div>
+
+    <!-- Leer: L20 M20 X15 J20 V20 S✗ D- -->
+    <div style="display:flex;align-items:center;padding:9px 16px;border-bottom:1px solid #2C313B">
+      <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+        <div style="width:3px;height:28px;border-radius:2px;background:#9B7AE8;flex-shrink:0"></div>
+        <div><div style="font-size:14px;font-weight:500;color:#ECEEF2">Leer</div><div style="font-size:11px;color:#8A909C">mín. 20 páginas</div></div>
+      </div>
+      <div style="display:flex;gap:3px;flex-shrink:0">
+        <div style="width:28px;height:28px;border-radius:8px;background:#9B7AE8;display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-weight:700;color:#fff">20</span></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#9B7AE8;display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-weight:700;color:#fff">20</span></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(155,122,232,.38);display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-weight:700;color:rgba(255,255,255,.75)">15</span></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#9B7AE8;display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-weight:700;color:#fff">20</span></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#9B7AE8;display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-weight:700;color:#fff">20</span></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25;border:1.5px solid #2C313B"></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25;opacity:.3"></div>
+      </div>
+    </div>
+
+    <!-- Correr: L✓ M✓ X✗ J✓ V✓ S✗ D- -->
+    <div style="display:flex;align-items:center;padding:9px 16px;border-bottom:1px solid #2C313B">
+      <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+        <div style="width:3px;height:28px;border-radius:2px;background:#F97316;flex-shrink:0"></div>
+        <div><div style="font-size:14px;font-weight:500;color:#ECEEF2">Correr</div><div style="font-size:11px;color:#8A909C">diario · 3 km</div></div>
+      </div>
+      <div style="display:flex;gap:3px;flex-shrink:0">
+        <div style="width:28px;height:28px;border-radius:8px;background:#F97316;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#F97316;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25;border:1px solid #2C313B"></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#F97316;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#F97316;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25;border:1.5px solid #2C313B"></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25;opacity:.3"></div>
+      </div>
+    </div>
+
+    <!-- Meditación: L✓ M✓ X✓ J✓ V✗ S✓ D- -->
+    <div style="display:flex;align-items:center;padding:9px 16px;border-bottom:1px solid #2C313B">
+      <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+        <div style="width:3px;height:28px;border-radius:2px;background:#38BDF8;flex-shrink:0"></div>
+        <div><div style="font-size:14px;font-weight:500;color:#ECEEF2">Meditación</div><div style="font-size:11px;color:#8A909C">diario · 10 min</div></div>
+      </div>
+      <div style="display:flex;gap:3px;flex-shrink:0">
+        <div style="width:28px;height:28px;border-radius:8px;background:#38BDF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(8,18,28,.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#38BDF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(8,18,28,.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#38BDF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(8,18,28,.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#38BDF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(8,18,28,.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25;border:1px solid #2C313B"></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#38BDF8;border:1.5px solid #38BDF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(8,18,28,.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25;opacity:.3"></div>
+      </div>
+    </div>
+
+    <!-- Dormir: L✓ M✓ X✓ J✗ V✓ S✓ D- -->
+    <div style="display:flex;align-items:center;padding:9px 16px">
+      <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+        <div style="width:3px;height:28px;border-radius:2px;background:#818CF8;flex-shrink:0"></div>
+        <div><div style="font-size:14px;font-weight:500;color:#ECEEF2">Dormir</div><div style="font-size:11px;color:#8A909C">mín. 7 horas</div></div>
+      </div>
+      <div style="display:flex;gap:3px;flex-shrink:0">
+        <div style="width:28px;height:28px;border-radius:8px;background:#818CF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#818CF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#818CF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25;border:1px solid #2C313B"></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#818CF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#818CF8;border:1.5px solid #818CF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1C1F25;opacity:.3"></div>
+      </div>
+    </div>
+
+    <div style="position:absolute;bottom:99px;right:22px;width:52px;height:52px;border-radius:50%;background:#E9C46A;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(233,196,106,.5)">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#14161A" stroke-width="2.5" stroke-linecap="round"><line x1="11" y1="3" x2="11" y2="19"/><line x1="3" y1="11" x2="19" y2="11"/></svg>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;height:83px;background:#1C1F25;border-top:1px solid #2C313B;display:flex;padding-top:12px">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E9C46A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg><span style="font-size:10px;font-weight:600;color:#E9C46A">Hoy</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8.5 7 6 11 6 14.5C6 18.09 8.686 21 12 21C15.314 21 18 18.09 18 14.5C18 11 15.5 7 12 3Z"/></svg><span style="font-size:10px;color:#8A909C">Hucha</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg><span style="font-size:10px;color:#8A909C">Estadísticas</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="15" cy="6" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="9" cy="12" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="15" cy="18" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/></svg><span style="font-size:10px;color:#8A909C">Ajustes</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FRAME B: Momentum · tarjetas ── -->
+<div style="flex:none">
+  <p style="font-size:11px;font-weight:600;color:#666;margin:0 0 14px;letter-spacing:.07em;text-transform:uppercase">B — Momentum · tarjetas + anillos</p>
+  <div style="width:390px;height:812px;border-radius:44px;overflow:hidden;background:#14161A;box-shadow:0 28px 72px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06);position:relative">
+
+    <div style="height:44px;padding:0 28px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:15px;font-weight:600;color:#ECEEF2">22:30</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="5" width="3" height="6" rx="1" fill="#ECEEF2"/><rect x="4.5" y="3" width="3" height="8" rx="1" fill="#ECEEF2"/><rect x="9" y="0" width="3" height="11" rx="1" fill="#ECEEF2"/></svg>
+        <svg width="23" height="11" viewBox="0 0 23 11"><rect x=".5" y=".5" width="19" height="10" rx="2.5" stroke="#ECEEF2" stroke-opacity=".4"/><rect x="20.5" y="3" width="2" height="5" rx="1" fill="#ECEEF2" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.5" fill="#ECEEF2"/></svg>
+      </div>
+    </div>
+
+    <!-- saldo card -->
+    <div style="margin:0 14px;background:#1C1F25;border-radius:16px;padding:18px 18px 16px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div>
+          <div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#8A909C;margin-bottom:4px">Saldo acumulado</div>
+          <div style="display:flex;align-items:baseline;gap:5px;line-height:1">
+            <span style="font-size:46px;font-weight:700;color:#ECEEF2;letter-spacing:-2.5px">22,85</span>
+            <span style="font-size:22px;font-weight:500;color:#ECEEF2;letter-spacing:-1px">€</span>
+          </div>
+          <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
+            <span style="font-size:13px;font-weight:600;color:#5CC87A">↑ +1,80 € hoy</span>
+            <span style="font-size:13px;color:#8A909C">·</span>
+            <span style="font-size:13px;color:#8A909C">racha · 4</span>
+          </div>
+        </div>
+        <svg width="72" height="36" viewBox="0 0 72 36" fill="none" style="margin-top:4px">
+          <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9C46A" stop-opacity=".25"/><stop offset="1" stop-color="#E9C46A" stop-opacity="0"/></linearGradient></defs>
+          <path d="M2,30 L12,26 L22,27 L32,20 L42,15 L52,10 L62,7 L72,4" stroke="#E9C46A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M2,30 L12,26 L22,27 L32,20 L42,15 L52,10 L62,7 L72,4 L72,36 L2,36 Z" fill="url(#sg)"/>
+        </svg>
+      </div>
+      <!-- progress rings — centers show initial letter -->
+      <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:11px;color:#8A909C;font-weight:500;flex-shrink:0">Hoy</span>
+        <div style="position:relative;width:30px;height:30px;flex-shrink:0">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" style="position:absolute;top:0;left:0"><circle cx="15" cy="15" r="11.5" stroke="#2C313B" stroke-width="2.5"/><circle cx="15" cy="15" r="11.5" stroke="#4A9EFF" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="72.3" stroke-dashoffset="27.1" transform="rotate(-90 15 15)"/></svg>
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center"><span style="font-size:8px;font-weight:700;color:#4A9EFF">A</span></div>
+        </div>
+        <div style="position:relative;width:30px;height:30px;flex-shrink:0">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" style="position:absolute;top:0;left:0"><circle cx="15" cy="15" r="11.5" stroke="#2C313B" stroke-width="2.5"/></svg>
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center"><span style="font-size:8px;font-weight:700;color:#9B7AE8">L</span></div>
+        </div>
+        <div style="position:relative;width:30px;height:30px;flex-shrink:0">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" style="position:absolute;top:0;left:0"><circle cx="15" cy="15" r="11.5" stroke="#2C313B" stroke-width="2.5"/></svg>
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center"><span style="font-size:8px;font-weight:700;color:#F97316">C</span></div>
+        </div>
+        <div style="position:relative;width:30px;height:30px;flex-shrink:0">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" style="position:absolute;top:0;left:0"><circle cx="15" cy="15" r="11.5" stroke="#2C313B" stroke-width="2.5"/><circle cx="15" cy="15" r="11.5" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="72.3" stroke-dashoffset="0" transform="rotate(-90 15 15)"/></svg>
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center"><span style="font-size:8px;font-weight:700;color:#38BDF8">M</span></div>
+        </div>
+        <div style="position:relative;width:30px;height:30px;flex-shrink:0">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" style="position:absolute;top:0;left:0"><circle cx="15" cy="15" r="11.5" stroke="#2C313B" stroke-width="2.5"/><circle cx="15" cy="15" r="11.5" stroke="#818CF8" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="72.3" stroke-dashoffset="0" transform="rotate(-90 15 15)"/></svg>
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center"><span style="font-size:8px;font-weight:700;color:#818CF8">D</span></div>
+        </div>
+        <span style="font-size:11px;color:#8A909C;margin-left:4px">2/5 hechos</span>
+      </div>
+    </div>
+
+    <!-- day headers -->
+    <div style="display:flex;align-items:center;padding:12px 14px 6px">
+      <div style="flex:1"></div>
+      <div style="display:flex;gap:3px">
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#8A909C">L</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#8A909C">M</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#8A909C">X</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#8A909C">J</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#8A909C">V</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:700;color:#E9C46A">S</div>
+        <div style="width:28px;text-align:center;font-size:10px;font-weight:500;color:#3A3F4A">D</div>
+      </div>
+    </div>
+
+    <!-- cards -->
+    <div style="display:flex;flex-direction:column;gap:4px;padding:0 14px">
+
+      <div style="background:#1C1F25;border-radius:12px;display:flex;align-items:center;padding:9px 12px">
+        <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+          <div style="width:4px;height:28px;border-radius:2px;background:#4A9EFF;flex-shrink:0"></div>
+          <div><div style="font-size:13px;font-weight:500;color:#ECEEF2">Agua</div><div style="font-size:10px;color:#8A909C">mín. 8 vasos</div></div>
+        </div>
+        <div style="display:flex;gap:3px;flex-shrink:0">
+          <div style="width:28px;height:28px;border-radius:8px;background:#4A9EFF;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#fff">8</span></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#4A9EFF;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#fff">8</span></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(74,158,255,.38);display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:rgba(255,255,255,.75)">6</span></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#242832;border:1px solid #2C313B"></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#4A9EFF;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#fff">8</span></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(74,158,255,.55);border:1.5px solid #4A9EFF;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#fff">5</span></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#242832;opacity:.3"></div>
+        </div>
+      </div>
+
+      <div style="background:#1C1F25;border-radius:12px;display:flex;align-items:center;padding:9px 12px">
+        <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+          <div style="width:4px;height:28px;border-radius:2px;background:#9B7AE8;flex-shrink:0"></div>
+          <div><div style="font-size:13px;font-weight:500;color:#ECEEF2">Leer</div><div style="font-size:10px;color:#8A909C">mín. 20 págs</div></div>
+        </div>
+        <div style="display:flex;gap:3px;flex-shrink:0">
+          <div style="width:28px;height:28px;border-radius:8px;background:#9B7AE8;display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-weight:700;color:#fff">20</span></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#9B7AE8;display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-weight:700;color:#fff">20</span></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(155,122,232,.38);display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-weight:700;color:rgba(255,255,255,.75)">15</span></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#9B7AE8;display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-weight:700;color:#fff">20</span></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#9B7AE8;display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-weight:700;color:#fff">20</span></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#242832;border:1.5px solid #2C313B"></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#242832;opacity:.3"></div>
+        </div>
+      </div>
+
+      <div style="background:#1C1F25;border-radius:12px;display:flex;align-items:center;padding:9px 12px">
+        <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+          <div style="width:4px;height:28px;border-radius:2px;background:#F97316;flex-shrink:0"></div>
+          <div><div style="font-size:13px;font-weight:500;color:#ECEEF2">Correr</div><div style="font-size:10px;color:#8A909C">diario · 3 km</div></div>
+        </div>
+        <div style="display:flex;gap:3px;flex-shrink:0">
+          <div style="width:28px;height:28px;border-radius:8px;background:#F97316;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#F97316;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#242832;border:1px solid #2C313B"></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#F97316;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#F97316;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#242832;border:1.5px solid #2C313B"></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#242832;opacity:.3"></div>
+        </div>
+      </div>
+
+      <div style="background:#1C1F25;border-radius:12px;display:flex;align-items:center;padding:9px 12px">
+        <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+          <div style="width:4px;height:28px;border-radius:2px;background:#38BDF8;flex-shrink:0"></div>
+          <div><div style="font-size:13px;font-weight:500;color:#ECEEF2">Meditación</div><div style="font-size:10px;color:#8A909C">diario · 10 min</div></div>
+        </div>
+        <div style="display:flex;gap:3px;flex-shrink:0">
+          <div style="width:28px;height:28px;border-radius:8px;background:#38BDF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(8,18,28,.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#38BDF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(8,18,28,.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#38BDF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(8,18,28,.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#38BDF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(8,18,28,.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#242832;border:1px solid #2C313B"></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#38BDF8;border:1.5px solid #38BDF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(8,18,28,.75)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#242832;opacity:.3"></div>
+        </div>
+      </div>
+
+      <div style="background:#1C1F25;border-radius:12px;display:flex;align-items:center;padding:9px 12px">
+        <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+          <div style="width:4px;height:28px;border-radius:2px;background:#818CF8;flex-shrink:0"></div>
+          <div><div style="font-size:13px;font-weight:500;color:#ECEEF2">Dormir</div><div style="font-size:10px;color:#8A909C">mín. 7 horas</div></div>
+        </div>
+        <div style="display:flex;gap:3px;flex-shrink:0">
+          <div style="width:28px;height:28px;border-radius:8px;background:#818CF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#818CF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#818CF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#242832;border:1px solid #2C313B"></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#818CF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#818CF8;border:1.5px solid #818CF8;display:flex;align-items:center;justify-content:center"><svg width="12" height="8" viewBox="0 0 14 10" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,5 5,9 13,1"/></svg></div>
+          <div style="width:28px;height:28px;border-radius:8px;background:#242832;opacity:.3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:absolute;bottom:99px;right:22px;width:52px;height:52px;border-radius:50%;background:#E9C46A;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(233,196,106,.5)">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#14161A" stroke-width="2.5" stroke-linecap="round"><line x1="11" y1="3" x2="11" y2="19"/><line x1="3" y1="11" x2="19" y2="11"/></svg>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;height:83px;background:#1C1F25;border-top:1px solid #2C313B;display:flex;padding-top:12px">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E9C46A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg><span style="font-size:10px;font-weight:600;color:#E9C46A">Hoy</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8.5 7 6 11 6 14.5C6 18.09 8.686 21 12 21C15.314 21 18 18.09 18 14.5C18 11 15.5 7 12 3Z"/></svg><span style="font-size:10px;color:#8A909C">Hucha</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg><span style="font-size:10px;color:#8A909C">Estadísticas</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="15" cy="6" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="9" cy="12" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="15" cy="18" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/></svg><span style="font-size:10px;color:#8A909C">Ajustes</span></div>
+    </div>
+  </div>
+</div>
+</div><!-- end row 01 -->
+
+
+<!-- ═══ 02 — LA HUCHA ═══ -->
+<div style="margin-bottom:32px">
+  <div style="display:flex;align-items:baseline;gap:12px">
+    <span style="font-size:11px;font-weight:700;color:#C9A640;letter-spacing:.12em">02</span>
+    <span style="font-size:22px;font-weight:700;color:#1a1a1a">La hucha</span>
+    <span style="font-size:14px;color:#888">— blob orgánico · CSS animado · border-radius morph</span>
+  </div>
+</div>
+
+<div style="display:flex;gap:48px;align-items:flex-start;margin-bottom:88px">
+
+<!-- ── FRAME: HUCHA ── -->
+<div style="flex:none">
+  <p style="font-size:11px;font-weight:600;color:#666;margin:0 0 14px;letter-spacing:.07em;text-transform:uppercase">Hucha — blob orgánico animado</p>
+  <div style="width:390px;height:812px;border-radius:44px;overflow:hidden;background:#14161A;box-shadow:0 28px 72px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06);position:relative">
+
+    <div style="height:44px;padding:0 28px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:15px;font-weight:600;color:#ECEEF2">22:30</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="5" width="3" height="6" rx="1" fill="#ECEEF2"/><rect x="4.5" y="3" width="3" height="8" rx="1" fill="#ECEEF2"/><rect x="9" y="0" width="3" height="11" rx="1" fill="#ECEEF2"/></svg>
+        <svg width="23" height="11" viewBox="0 0 23 11"><rect x=".5" y=".5" width="19" height="10" rx="2.5" stroke="#ECEEF2" stroke-opacity=".4"/><rect x="20.5" y="3" width="2" height="5" rx="1" fill="#ECEEF2" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.5" fill="#ECEEF2"/></svg>
+      </div>
+    </div>
+
+    <div style="padding:8px 24px 0;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C">Hucha</span>
+      <span style="font-size:12px;color:#8A909C">jun 2026</span>
+    </div>
+
+    <!-- ▼ ORGANIC BLOB — signature element -->
+    <div style="display:flex;justify-content:center;padding:20px 0 12px;position:relative">
+      <!-- Ambient glow -->
+      <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:320px;height:260px;background:radial-gradient(ellipse at 50% 55%,rgba(233,196,106,.13) 0%,transparent 68%);pointer-events:none"></div>
+
+      <div style="position:relative;width:280px;height:280px">
+
+        <!-- THE BLOB: overflow:hidden clips fill; blobMorph animates shape -->
+        <div style="position:absolute;top:40px;left:40px;width:200px;height:200px;animation:blobMorph 9s ease-in-out infinite;overflow:hidden;background:#1C1F2A;box-shadow:0 18px 56px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.05);transform:translateZ(0)">
+
+          <!-- Gold fill 63% from bottom -->
+          <div style="position:absolute;bottom:0;left:0;right:0;height:63%">
+            <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(233,196,106,.85) 0%,rgba(200,158,56,.92) 45%,rgba(158,120,32,.97) 100%)"></div>
+            <!-- Animated wave at top of fill — 400px = 2× width for seamless loop -->
+            <svg style="position:absolute;top:-12px;left:0;width:400px;height:24px;animation:waveShift 4s linear infinite" viewBox="0 0 400 24" preserveAspectRatio="none"><path d="M0,12 C25,4 50,20 75,12 C100,4 125,20 150,12 C175,4 200,20 200,12 C225,4 250,20 275,12 C300,4 325,20 350,12 C375,4 400,12 400,12 L400,24 L0,24 Z" fill="rgba(233,196,106,.85)"/></svg>
+            <!-- Caustic shimmer -->
+            <div style="position:absolute;top:8px;left:22%;right:22%;height:32%;background:radial-gradient(ellipse at center top,rgba(255,228,130,.16) 0%,transparent 80%)"></div>
+          </div>
+
+          <!-- Interior highlight arc -->
+          <div style="position:absolute;top:10%;left:9%;width:30%;height:20%;background:linear-gradient(140deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 55%,transparent 100%);border-radius:50%;transform:rotate(-20deg)"></div>
+
+          <!-- Number overlay -->
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:15%">
+            <span style="font-size:34px;font-weight:700;color:#ECEEF2;letter-spacing:-1.5px;line-height:1;text-shadow:0 2px 18px rgba(0,0,0,.7)">22,85 €</span>
+            <span style="font-size:11px;font-weight:600;color:rgba(233,196,106,.92);margin-top:7px;text-shadow:0 1px 8px rgba(0,0,0,.4)">↑ +1,80 € hoy</span>
+          </div>
+        </div>
+
+        <!-- Metaballs por CATEGORÍA (color), no por hábito — grandes, animadas, € dentro -->
+        <svg style="position:absolute;top:0;left:0;width:280px;height:280px;pointer-events:none" viewBox="0 0 280 280">
+          <defs>
+            <filter id="goo" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="6" result="blur"/>
+              <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10"/>
+            </filter>
+          </defs>
+          <!-- Mente (Leer + Meditación) 11,15€ — púrpura, mayor aportación -->
+          <g filter="url(#goo)" style="animation:floatA 7s ease-in-out infinite">
+            <circle cx="210" cy="72" r="9" fill="#9B7AE8"/>
+            <circle cx="219" cy="64" r="16" fill="#9B7AE8"/>
+            <circle cx="229" cy="55" r="31" fill="#9B7AE8"/>
+          </g>
+          <!-- Cuerpo (Agua + Correr) 7,10€ — azul -->
+          <g filter="url(#goo)" style="animation:floatB 8s ease-in-out infinite">
+            <circle cx="66" cy="207" r="7" fill="#4A9EFF"/>
+            <circle cx="59" cy="214" r="13" fill="#4A9EFF"/>
+            <circle cx="51" cy="221" r="25" fill="#4A9EFF"/>
+          </g>
+          <!-- Sueño (Dormir) 4,60€ — índigo -->
+          <g filter="url(#goo)" style="animation:floatC 6.5s ease-in-out infinite">
+            <circle cx="213" cy="208" r="6" fill="#818CF8"/>
+            <circle cx="220" cy="215" r="11" fill="#818CF8"/>
+            <circle cx="228" cy="222" r="21" fill="#818CF8"/>
+          </g>
+        </svg>
+        <!-- € + nombre de categoría dentro de cada metaball (overlay, misma animación) -->
+        <div style="position:absolute;top:42px;left:199px;width:60px;text-align:center;animation:floatA 7s ease-in-out infinite">
+          <div style="font-size:8px;font-weight:600;color:rgba(255,255,255,.72);letter-spacing:.06em;text-transform:uppercase">Mente</div>
+          <div style="font-size:14px;font-weight:700;color:#fff;letter-spacing:-.5px;text-shadow:0 1px 5px rgba(0,0,0,.45)">11,15 €</div>
+        </div>
+        <div style="position:absolute;top:208px;left:21px;width:60px;text-align:center;animation:floatB 8s ease-in-out infinite">
+          <div style="font-size:7px;font-weight:600;color:rgba(255,255,255,.72);letter-spacing:.06em;text-transform:uppercase">Cuerpo</div>
+          <div style="font-size:12px;font-weight:700;color:#fff;letter-spacing:-.5px;text-shadow:0 1px 5px rgba(0,0,0,.45)">7,10 €</div>
+        </div>
+        <div style="position:absolute;top:211px;left:204px;width:48px;text-align:center;animation:floatC 6.5s ease-in-out infinite">
+          <div style="font-size:7px;font-weight:600;color:rgba(255,255,255,.72);letter-spacing:.05em;text-transform:uppercase">Sueño</div>
+          <div style="font-size:11px;font-weight:700;color:#fff;letter-spacing:-.5px;text-shadow:0 1px 5px rgba(0,0,0,.45)">4,60 €</div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- transactions -->
+    <div style="border-top:1px solid #2C313B;padding:12px 24px 0">
+      <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C;margin-bottom:2px">Últimos movimientos</div>
+    </div>
+
+    <div style="display:flex;align-items:center;padding:11px 24px;border-bottom:1px solid #2C313B">
+      <div style="width:28px;height:28px;border-radius:8px;background:rgba(56,189,248,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:12px;font-weight:700;color:#38BDF8">M</span></div>
+      <div style="margin-left:12px;flex:1;min-width:0"><div style="font-size:14px;font-weight:500;color:#ECEEF2">Meditación</div><div style="font-size:11px;color:#8A909C">hoy · hábito diario cumplido</div></div>
+      <span style="font-size:14px;font-weight:600;color:#5CC87A;font-variant-numeric:tabular-nums">+0,40 €</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:11px 24px;border-bottom:1px solid #2C313B">
+      <div style="width:28px;height:28px;border-radius:8px;background:rgba(129,140,248,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:12px;font-weight:700;color:#818CF8">D</span></div>
+      <div style="margin-left:12px;flex:1;min-width:0"><div style="font-size:14px;font-weight:500;color:#ECEEF2">Dormir</div><div style="font-size:11px;color:#8A909C">hoy · 7,5 h registradas</div></div>
+      <span style="font-size:14px;font-weight:600;color:#5CC87A;font-variant-numeric:tabular-nums">+0,35 €</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:11px 24px;border-bottom:1px solid #2C313B">
+      <div style="width:28px;height:28px;border-radius:8px;background:rgba(155,122,232,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:12px;font-weight:700;color:#9B7AE8">L</span></div>
+      <div style="margin-left:12px;flex:1;min-width:0"><div style="font-size:14px;font-weight:500;color:#ECEEF2">Leer</div><div style="font-size:11px;color:#8A909C">ayer · 20 páginas · fase 1</div></div>
+      <span style="font-size:14px;font-weight:600;color:#5CC87A;font-variant-numeric:tabular-nums">+0,45 €</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:11px 24px;border-bottom:1px solid #2C313B">
+      <div style="width:28px;height:28px;border-radius:8px;background:rgba(249,115,22,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:12px;font-weight:700;color:#F97316">C</span></div>
+      <div style="margin-left:12px;flex:1;min-width:0"><div style="font-size:14px;font-weight:500;color:#ECEEF2">Correr</div><div style="font-size:11px;color:#8A909C">ayer · 3 km completados</div></div>
+      <span style="font-size:14px;font-weight:600;color:#5CC87A;font-variant-numeric:tabular-nums">+0,30 €</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:11px 24px">
+      <div style="width:28px;height:28px;border-radius:8px;background:rgba(74,158,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:12px;font-weight:700;color:#4A9EFF">A</span></div>
+      <div style="margin-left:12px;flex:1;min-width:0"><div style="font-size:14px;font-weight:500;color:#ECEEF2">Agua</div><div style="font-size:11px;color:#8A909C;text-decoration:line-through">mié · 0/8 vasos · penalización</div></div>
+      <span style="font-size:14px;font-weight:600;color:#E07373;font-variant-numeric:tabular-nums">−0,20 €</span>
+    </div>
+
+    <div style="position:absolute;bottom:0;left:0;right:0;height:83px;background:#1C1F25;border-top:1px solid #2C313B;display:flex;padding-top:12px">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg><span style="font-size:10px;color:#8A909C">Hoy</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E9C46A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8.5 7 6 11 6 14.5C6 18.09 8.686 21 12 21C15.314 21 18 18.09 18 14.5C18 11 15.5 7 12 3Z"/></svg><span style="font-size:10px;font-weight:600;color:#E9C46A">Hucha</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg><span style="font-size:10px;color:#8A909C">Estadísticas</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="15" cy="6" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="9" cy="12" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="15" cy="18" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/></svg><span style="font-size:10px;color:#8A909C">Ajustes</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FRAME: CREAR HÁBITO ── -->
+<div style="flex:none">
+  <p style="font-size:11px;font-weight:600;color:#666;margin:0 0 14px;letter-spacing:.07em;text-transform:uppercase">Crear / editar hábito</p>
+  <div style="width:390px;height:812px;border-radius:44px;overflow:hidden;background:#14161A;box-shadow:0 28px 72px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06);position:relative">
+
+    <div style="position:absolute;top:0;left:0;right:0;height:320px;opacity:.35">
+      <div style="height:44px;padding:0 28px;display:flex;align-items:center;justify-content:space-between"><span style="font-size:15px;font-weight:600;color:#ECEEF2">22:30</span></div>
+      <div style="padding:16px 24px 14px"><div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C;margin-bottom:4px">Saldo acumulado</div><div style="font-size:44px;font-weight:700;color:#ECEEF2;letter-spacing:-2.5px;line-height:1">22,85 €</div></div>
+    </div>
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(14,16,24,.72)"></div>
+
+    <div style="position:absolute;bottom:0;left:0;right:0;background:#1C1F25;border-radius:28px 28px 44px 44px;padding:0 0 44px">
+      <div style="display:flex;justify-content:center;padding:12px 0 16px"><div style="width:36px;height:4px;border-radius:2px;background:#2C313B"></div></div>
+
+      <div style="padding:0 24px 20px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:22px;font-weight:700;color:#ECEEF2">Nuevo hábito</span>
+        <div style="width:32px;height:32px;border-radius:50%;background:#242832;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8A909C" stroke-width="1.8" stroke-linecap="round"><line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/></svg></div>
+      </div>
+
+      <div style="padding:0 24px 16px">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A909C;margin-bottom:8px">Nombre</div>
+        <div style="background:#242832;border-radius:12px;padding:14px 16px;border:1px solid #2C313B">
+          <span style="font-size:16px;color:#ECEEF2">Correr matutino</span>
+          <span style="display:inline-block;width:2px;height:18px;background:#E9C46A;margin-left:1px;vertical-align:middle"></span>
+        </div>
+      </div>
+
+      <!-- icono + color -->
+      <div style="padding:0 24px 16px;display:flex;gap:12px">
+        <div style="flex:0 0 auto">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A909C;margin-bottom:8px">Icono</div>
+          <div style="background:#242832;border-radius:12px;padding:10px 12px;border:1px solid #2C313B;display:flex;align-items:center;justify-content:center">
+            <div style="width:34px;height:34px;border-radius:10px;background:rgba(249,115,22,.22);display:flex;align-items:center;justify-content:center">
+              <span style="font-size:15px;font-weight:700;color:#F97316">C</span>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A909C;margin-bottom:8px">Color</div>
+          <div style="background:#242832;border-radius:12px;padding:10px 12px;border:1px solid #2C313B;display:flex;gap:10px;align-items:center">
+            <div style="width:30px;height:30px;border-radius:50%;background:#4A9EFF"></div>
+            <div style="width:30px;height:30px;border-radius:50%;background:#F97316;box-shadow:0 0 0 2.5px #1C1F25,0 0 0 4.5px #F97316"></div>
+            <div style="width:30px;height:30px;border-radius:50%;background:#9B7AE8"></div>
+            <div style="width:30px;height:30px;border-radius:50%;background:#38BDF8"></div>
+            <div style="width:30px;height:30px;border-radius:50%;background:#818CF8"></div>
+            <!-- Custom color picker -->
+            <div style="width:30px;height:30px;border-radius:50%;background:conic-gradient(from 0deg,#ff5c5c,#ffb347,#ffe066,#80e27e,#4db8ff,#b47aff,#ff5c5c);position:relative;overflow:hidden;flex-shrink:0;box-shadow:0 0 0 1px rgba(255,255,255,.12)">
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.18)">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:0 24px 16px;display:flex;gap:12px">
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A909C;margin-bottom:8px">Registro</div>
+          <div style="background:#242832;border-radius:12px;padding:3px;display:flex;gap:2px">
+            <div style="flex:1;background:#1C1F25;border-radius:9px;padding:9px 0;text-align:center;border:1px solid #2C313B"><span style="font-size:12px;font-weight:500;color:#ECEEF2">Booleano</span></div>
+            <div style="flex:1;border-radius:9px;padding:9px 0;text-align:center"><span style="font-size:12px;color:#8A909C">Número</span></div>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A909C;margin-bottom:8px">Periodo</div>
+          <div style="background:#242832;border-radius:12px;padding:3px;display:flex;gap:2px">
+            <div style="flex:1;background:#1C1F25;border-radius:9px;padding:9px 0;text-align:center;border:1px solid #2C313B"><span style="font-size:12px;font-weight:500;color:#ECEEF2">Diario</span></div>
+            <div style="flex:1;border-radius:9px;padding:9px 0;text-align:center"><span style="font-size:12px;color:#8A909C">Semanal</span></div>
+            <div style="flex:1;border-radius:9px;padding:9px 0;text-align:center"><span style="font-size:12px;color:#8A909C">Mensual</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:0 24px 20px">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A909C;margin-bottom:8px">Fase activa</div>
+        <div style="background:#242832;border-radius:12px;padding:14px 16px;border:1px solid #2C313B">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font-size:13px;color:#8A909C">Desde</span><span style="font-size:13px;font-weight:500;color:#ECEEF2">15 may 2026</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;color:#8A909C">Objetivo mínimo</span><span style="font-size:13px;font-weight:500;color:#ECEEF2">3 km/día</span></div>
+        </div>
+        <button style="margin-top:8px;width:100%;background:none;border:1px dashed #2C313B;border-radius:12px;padding:11px;font-size:13px;color:#8A909C;font-family:'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>Añadir siguiente fase</button>
+      </div>
+
+      <div style="padding:0 24px 16px">
+        <div style="background:#E9C46A;border-radius:14px;padding:16px;text-align:center;box-shadow:0 4px 20px rgba(233,196,106,.4)"><span style="font-size:16px;font-weight:700;color:#14161A">Guardar hábito</span></div>
+      </div>
+      <div style="padding:0 24px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;color:#8A909C">Archivar hábito</span>
+        <span style="font-size:13px;color:#E07373">Eliminar</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- end row 02 -->
+
+
+<!-- ═══ 03 — FLUJOS SECUNDARIOS ═══ -->
+<div style="margin-bottom:32px">
+  <div style="display:flex;align-items:baseline;gap:12px">
+    <span style="font-size:11px;font-weight:700;color:#C9A640;letter-spacing:.12em">03</span>
+    <span style="font-size:22px;font-weight:700;color:#1a1a1a">Flujos secundarios</span>
+    <span style="font-size:14px;color:#888">— estadísticas · ajustes</span>
+  </div>
+</div>
+
+<div style="display:flex;gap:48px;align-items:flex-start;margin-bottom:88px">
+
+<!-- ── FRAME: ESTADÍSTICAS ── -->
+<div style="flex:none">
+  <p style="font-size:11px;font-weight:600;color:#666;margin:0 0 14px;letter-spacing:.07em;text-transform:uppercase">Estadísticas</p>
+  <div style="width:390px;height:812px;border-radius:44px;overflow:hidden;background:#14161A;box-shadow:0 28px 72px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06);position:relative">
+
+    <div style="height:44px;padding:0 28px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:15px;font-weight:600;color:#ECEEF2">22:30</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="5" width="3" height="6" rx="1" fill="#ECEEF2"/><rect x="4.5" y="3" width="3" height="8" rx="1" fill="#ECEEF2"/><rect x="9" y="0" width="3" height="11" rx="1" fill="#ECEEF2"/></svg>
+        <svg width="23" height="11" viewBox="0 0 23 11"><rect x=".5" y=".5" width="19" height="10" rx="2.5" stroke="#ECEEF2" stroke-opacity=".4"/><rect x="20.5" y="3" width="2" height="5" rx="1" fill="#ECEEF2" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.5" fill="#ECEEF2"/></svg>
+      </div>
+    </div>
+
+    <div style="padding:8px 24px 16px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:22px;font-weight:700;color:#ECEEF2">Estadísticas</span>
+      <div style="background:#1C1F25;border-radius:10px;padding:3px;display:flex;gap:1px">
+        <div style="padding:7px 12px;border-radius:8px"><span style="font-size:12px;color:#8A909C">Sem</span></div>
+        <div style="padding:7px 12px;border-radius:8px;background:#242832;border:1px solid #2C313B"><span style="font-size:12px;font-weight:600;color:#ECEEF2">Mes</span></div>
+        <div style="padding:7px 12px;border-radius:8px"><span style="font-size:12px;color:#8A909C">Año</span></div>
+      </div>
+    </div>
+
+    <!-- heatmap -->
+    <div style="padding:0 24px 20px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C;margin-bottom:12px">Actividad diaria · jun 2026</div>
+      <div style="display:flex;gap:6px;align-items:flex-start;width:100%">
+        <div style="display:flex;flex-direction:column;gap:2px;padding-top:0">
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">L</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">M</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">X</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">J</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">V</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">S</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">D</span>
+        </div>
+        <div style="display:grid;grid-template-rows:repeat(7,12px);grid-template-columns:repeat(12,1fr);grid-auto-flow:column;gap:2px;flex:1;min-width:0">
+          <div style="border-radius:2px;background:rgba(233,196,106,.15)"></div><div style="border-radius:2px;background:rgba(233,196,106,.35)"></div><div style="border-radius:2px;background:#1C1F25"></div><div style="border-radius:2px;background:rgba(233,196,106,.35)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.35)"></div><div style="border-radius:2px;background:rgba(233,196,106,.15)"></div>
+          <div style="border-radius:2px;background:rgba(233,196,106,.35)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.35)"></div><div style="border-radius:2px;background:rgba(233,196,106,.15)"></div><div style="border-radius:2px;background:rgba(233,196,106,.35)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.35)"></div>
+          <div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.35)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.35)"></div>
+          <div style="border-radius:2px;background:rgba(233,196,106,.35)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div>
+          <div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.35)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div>
+          <div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div>
+          <div style="border-radius:2px;background:rgba(233,196,106,.35)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div>
+          <div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div>
+          <div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div>
+          <div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div>
+          <div style="border-radius:2px;background:rgba(233,196,106,.62)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.62)"></div>
+          <div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div><div style="border-radius:2px;background:rgba(233,196,106,.9)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- cumplimiento — dot instead of emoji -->
+    <div style="padding:0 24px 20px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C;margin-bottom:12px">Cumplimiento mensual</div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:#4A9EFF;flex-shrink:0"></div><span style="font-size:13px;font-weight:500;color:#ECEEF2">Agua</span></div><span style="font-size:12px;font-weight:600;color:#ECEEF2;font-variant-numeric:tabular-nums">72%</span></div>
+        <div style="height:5px;background:#1C1F25;border-radius:3px;overflow:hidden"><div style="height:100%;width:72%;background:#4A9EFF;border-radius:3px"></div></div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:#9B7AE8;flex-shrink:0"></div><span style="font-size:13px;font-weight:500;color:#ECEEF2">Leer</span></div><span style="font-size:12px;font-weight:600;color:#ECEEF2;font-variant-numeric:tabular-nums">88%</span></div>
+        <div style="height:5px;background:#1C1F25;border-radius:3px;overflow:hidden"><div style="height:100%;width:88%;background:#9B7AE8;border-radius:3px"></div></div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:#F97316;flex-shrink:0"></div><span style="font-size:13px;font-weight:500;color:#ECEEF2">Correr</span></div><span style="font-size:12px;font-weight:600;color:#ECEEF2;font-variant-numeric:tabular-nums">65%</span></div>
+        <div style="height:5px;background:#1C1F25;border-radius:3px;overflow:hidden"><div style="height:100%;width:65%;background:#F97316;border-radius:3px"></div></div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:#38BDF8;flex-shrink:0"></div><span style="font-size:13px;font-weight:500;color:#ECEEF2">Meditación</span></div><span style="font-size:12px;font-weight:600;color:#ECEEF2;font-variant-numeric:tabular-nums">94%</span></div>
+        <div style="height:5px;background:#1C1F25;border-radius:3px;overflow:hidden"><div style="height:100%;width:94%;background:#38BDF8;border-radius:3px"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:#818CF8;flex-shrink:0"></div><span style="font-size:13px;font-weight:500;color:#ECEEF2">Dormir</span></div><span style="font-size:12px;font-weight:600;color:#ECEEF2;font-variant-numeric:tabular-nums">80%</span></div>
+        <div style="height:5px;background:#1C1F25;border-radius:3px;overflow:hidden"><div style="height:100%;width:80%;background:#818CF8;border-radius:3px"></div></div>
+      </div>
+    </div>
+
+    <!-- Mejores rachas — horizontal timeline bars -->
+    <div style="padding:0 24px 88px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C;margin-bottom:10px">Mejores rachas</div>
+      <!-- Meditación 14d = 100% -->
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+        <div style="width:44px;text-align:right;font-size:9px;color:#8A909C;flex-shrink:0">11 feb</div>
+        <div style="flex:1;height:19px;background:#1C1F25;border-radius:3px;position:relative;overflow:hidden">
+          <div style="position:absolute;left:0;top:0;bottom:0;width:100%;background:rgba(56,189,248,.52);border-radius:3px;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#ECEEF2">14</span></div>
+        </div>
+        <div style="width:44px;font-size:9px;color:#8A909C;flex-shrink:0">24 feb</div>
+      </div>
+      <!-- Leer 11d, offset 7% -->
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+        <div style="width:44px;text-align:right;font-size:9px;color:#8A909C;flex-shrink:0">1 feb</div>
+        <div style="flex:1;height:19px;background:#1C1F25;border-radius:3px;position:relative;overflow:hidden">
+          <div style="position:absolute;left:7%;top:0;bottom:0;width:78.6%;background:rgba(155,122,232,.52);border-radius:3px;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#ECEEF2">11</span></div>
+        </div>
+        <div style="width:44px;font-size:9px;color:#8A909C;flex-shrink:0">11 feb</div>
+      </div>
+      <!-- Dormir 10d, offset 12% -->
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+        <div style="width:44px;text-align:right;font-size:9px;color:#8A909C;flex-shrink:0">20 ene</div>
+        <div style="flex:1;height:19px;background:#1C1F25;border-radius:3px;position:relative;overflow:hidden">
+          <div style="position:absolute;left:12%;top:0;bottom:0;width:71.4%;background:rgba(129,140,248,.52);border-radius:3px;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#ECEEF2">10</span></div>
+        </div>
+        <div style="width:44px;font-size:9px;color:#8A909C;flex-shrink:0">29 ene</div>
+      </div>
+      <!-- Agua 8d, offset 18% -->
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">
+        <div style="width:44px;text-align:right;font-size:9px;color:#8A909C;flex-shrink:0">15 ene</div>
+        <div style="flex:1;height:19px;background:#1C1F25;border-radius:3px;position:relative;overflow:hidden">
+          <div style="position:absolute;left:18%;top:0;bottom:0;width:57.1%;background:rgba(74,158,255,.52);border-radius:3px;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#ECEEF2">8</span></div>
+        </div>
+        <div style="width:44px;font-size:9px;color:#8A909C;flex-shrink:0">22 ene</div>
+      </div>
+      <!-- Correr 6d, offset 24% -->
+      <div style="display:flex;align-items:center;gap:7px">
+        <div style="width:44px;text-align:right;font-size:9px;color:#8A909C;flex-shrink:0">8 ene</div>
+        <div style="flex:1;height:19px;background:#1C1F25;border-radius:3px;position:relative;overflow:hidden">
+          <div style="position:absolute;left:24%;top:0;bottom:0;width:42.9%;background:rgba(249,115,22,.52);border-radius:3px;display:flex;align-items:center;justify-content:center"><span style="font-size:10px;font-weight:700;color:#ECEEF2">6</span></div>
+        </div>
+        <div style="width:44px;font-size:9px;color:#8A909C;flex-shrink:0">13 ene</div>
+      </div>
+    </div>
+
+    <div style="position:absolute;bottom:0;left:0;right:0;height:83px;background:#1C1F25;border-top:1px solid #2C313B;display:flex;padding-top:12px">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg><span style="font-size:10px;color:#8A909C">Hoy</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8.5 7 6 11 6 14.5C6 18.09 8.686 21 12 21C15.314 21 18 18.09 18 14.5C18 11 15.5 7 12 3Z"/></svg><span style="font-size:10px;color:#8A909C">Hucha</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E9C46A" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg><span style="font-size:10px;font-weight:600;color:#E9C46A">Estadísticas</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="15" cy="6" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="9" cy="12" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="15" cy="18" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/></svg><span style="font-size:10px;color:#8A909C">Ajustes</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FRAME: STATS INDIVIDUAL — Leer ── -->
+<div style="flex:none">
+  <p style="font-size:11px;font-weight:600;color:#666;margin:0 0 14px;letter-spacing:.07em;text-transform:uppercase">Estadísticas · hábito individual</p>
+  <div style="width:390px;height:812px;border-radius:44px;overflow:hidden;background:#14161A;box-shadow:0 28px 72px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06);position:relative">
+
+    <!-- status bar -->
+    <div style="height:44px;padding:0 28px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:15px;font-weight:600;color:#ECEEF2">22:30</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="5" width="3" height="6" rx="1" fill="#ECEEF2"/><rect x="4.5" y="3" width="3" height="8" rx="1" fill="#ECEEF2"/><rect x="9" y="0" width="3" height="11" rx="1" fill="#ECEEF2"/></svg>
+        <svg width="23" height="11" viewBox="0 0 23 11"><rect x=".5" y=".5" width="19" height="10" rx="2.5" stroke="#ECEEF2" stroke-opacity=".4"/><rect x="20.5" y="3" width="2" height="5" rx="1" fill="#ECEEF2" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.5" fill="#ECEEF2"/></svg>
+      </div>
+    </div>
+
+    <!-- back + title -->
+    <div style="padding:4px 20px 16px;display:flex;align-items:center;gap:12px">
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#8A909C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="11,3 5,9 11,15"/></svg>
+        <span style="font-size:13px;color:#8A909C">Estadísticas</span>
+      </div>
+      <div style="flex:1;display:flex;align-items:center;gap:10px;min-width:0">
+        <div style="width:4px;height:28px;border-radius:2px;background:#9B7AE8;flex-shrink:0"></div>
+        <span style="font-size:22px;font-weight:700;color:#ECEEF2;letter-spacing:-.5px">Leer</span>
+      </div>
+    </div>
+
+    <!-- stat chips row -->
+    <div style="display:flex;gap:8px;padding:0 20px 18px;overflow:hidden">
+      <div style="background:#1C1F25;border-radius:12px;padding:12px 14px;flex:1">
+        <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A909C;margin-bottom:4px">Aportación total</div>
+        <div style="font-size:22px;font-weight:700;color:#ECEEF2;letter-spacing:-1px;line-height:1">8,45 €</div>
+      </div>
+      <div style="background:#1C1F25;border-radius:12px;padding:12px 14px;flex:1">
+        <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A909C;margin-bottom:4px">Racha actual</div>
+        <div style="display:flex;align-items:baseline;gap:4px;line-height:1">
+          <span style="font-size:22px;font-weight:700;color:#9B7AE8;letter-spacing:-1px">4</span>
+          <span style="font-size:13px;color:#8A909C">días</span>
+        </div>
+      </div>
+      <div style="background:#1C1F25;border-radius:12px;padding:12px 14px;flex:1">
+        <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8A909C;margin-bottom:4px">Mejor racha</div>
+        <div style="display:flex;align-items:baseline;gap:4px;line-height:1">
+          <span style="font-size:22px;font-weight:700;color:#ECEEF2;letter-spacing:-1px">11</span>
+          <span style="font-size:13px;color:#8A909C">días</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- heatmap section -->
+    <div style="padding:0 20px 16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C">Actividad · últimas 12 semanas</span>
+        <span style="font-size:11px;color:#8A909C">88% cumplimiento</span>
+      </div>
+      <div style="display:flex;gap:6px;align-items:flex-start;width:100%">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">L</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">M</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">X</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">J</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">V</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">S</span>
+          <span style="font-size:9px;color:#8A909C;line-height:14px;height:14px;display:block">D</span>
+        </div>
+        <div style="display:grid;grid-template-rows:repeat(7,12px);grid-template-columns:repeat(12,1fr);grid-auto-flow:column;gap:2px;flex:1;min-width:0">
+          <!-- wk1 --><div style="border-radius:2px;background:#1C1F25"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:#1C1F25"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div>
+          <!-- wk2 --><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:#1C1F25"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div>
+          <!-- wk3 --><div style="border-radius:2px;background:rgba(155,122,232,.5)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:#1C1F25"></div>
+          <!-- wk4 --><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:#1C1F25"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div>
+          <!-- wk5 --><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div>
+          <!-- wk6 --><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:#1C1F25"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div>
+          <!-- wk7 --><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:#1C1F25"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div>
+          <!-- wk8 --><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div>
+          <!-- wk9 --><div style="border-radius:2px;background:#1C1F25"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div>
+          <!-- wk10 --><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:#1C1F25"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div>
+          <!-- wk11 --><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div>
+          <!-- wk12 --><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div><div style="border-radius:2px;background:#1C1F25"></div><div style="border-radius:2px;background:rgba(155,122,232,.9)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- bar chart: páginas últimos 7 días -->
+    <div style="padding:0 20px 16px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C;margin-bottom:12px">Páginas · últimos 7 días</div>
+      <div style="display:flex;align-items:flex-end;gap:5px;height:72px">
+        <!-- L=20 M=20 X=15 J=20 V=20 S=0 D(hoy)=partial -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="flex:1;width:100%;display:flex;align-items:flex-end"><div style="width:100%;height:100%;background:rgba(155,122,232,.75);border-radius:3px 3px 0 0"></div></div>
+          <span style="font-size:8px;color:#8A909C">L</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="flex:1;width:100%;display:flex;align-items:flex-end"><div style="width:100%;height:100%;background:rgba(155,122,232,.75);border-radius:3px 3px 0 0"></div></div>
+          <span style="font-size:8px;color:#8A909C">M</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="flex:1;width:100%;display:flex;align-items:flex-end"><div style="width:100%;height:75%;background:rgba(155,122,232,.5);border-radius:3px 3px 0 0"></div></div>
+          <span style="font-size:8px;color:#8A909C">X</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="flex:1;width:100%;display:flex;align-items:flex-end"><div style="width:100%;height:100%;background:rgba(155,122,232,.75);border-radius:3px 3px 0 0"></div></div>
+          <span style="font-size:8px;color:#8A909C">J</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="flex:1;width:100%;display:flex;align-items:flex-end"><div style="width:100%;height:100%;background:rgba(155,122,232,.75);border-radius:3px 3px 0 0"></div></div>
+          <span style="font-size:8px;color:#8A909C">V</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="flex:1;width:100%;display:flex;align-items:flex-end"><div style="width:100%;height:4px;background:#2C313B;border-radius:3px 3px 0 0"></div></div>
+          <span style="font-size:8px;color:#8A909C">S</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="flex:1;width:100%;display:flex;align-items:flex-end"><div style="width:100%;height:50%;background:rgba(155,122,232,.4);border:1.5px solid #9B7AE8;border-radius:3px 3px 0 0;box-sizing:border-box"></div></div>
+          <span style="font-size:8px;font-weight:700;color:#E9C46A">D</span>
+        </div>
+      </div>
+      <!-- y-axis labels -->
+      <div style="display:flex;justify-content:space-between;margin-top:6px;padding:0 2px">
+        <span style="font-size:9px;color:#8A909C">0</span>
+        <span style="font-size:9px;color:#8A909C">mín. 20 págs</span>
+      </div>
+    </div>
+
+    <!-- fases de hábito -->
+    <div style="padding:0 20px 20px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C;margin-bottom:10px">Fases</div>
+      <div style="background:#1C1F25;border-radius:12px;overflow:hidden">
+        <div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #2C313B">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#9B7AE8">Fase 1 — actual</div>
+            <div style="font-size:11px;color:#8A909C;margin-top:2px">desde 1 abr 2026 · mín. 20 págs/día</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:13px;font-weight:700;color:#ECEEF2">7,80 €</div>
+            <div style="font-size:10px;color:#8A909C">hasta hoy</div>
+          </div>
+        </div>
+        <div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;opacity:.55">
+          <div>
+            <div style="font-size:13px;font-weight:500;color:#ECEEF2">Fase 2 — próxima</div>
+            <div style="font-size:11px;color:#8A909C;margin-top:2px">desde 1 jul 2026 · mín. 30 págs/día</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><polyline points="6,3 10,8 6,13"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- nav — Estadísticas active -->
+    <div style="position:absolute;bottom:0;left:0;right:0;height:83px;background:#1C1F25;border-top:1px solid #2C313B;display:flex;padding-top:12px">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg><span style="font-size:10px;color:#8A909C">Hoy</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8.5 7 6 11 6 14.5C6 18.09 8.686 21 12 21C15.314 21 18 18.09 18 14.5C18 11 15.5 7 12 3Z"/></svg><span style="font-size:10px;color:#8A909C">Hucha</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E9C46A" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg><span style="font-size:10px;font-weight:600;color:#E9C46A">Estadísticas</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="15" cy="6" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="9" cy="12" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="15" cy="18" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/></svg><span style="font-size:10px;color:#8A909C">Ajustes</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FRAME: AJUSTES ── -->
+<div style="flex:none">
+  <p style="font-size:11px;font-weight:600;color:#666;margin:0 0 14px;letter-spacing:.07em;text-transform:uppercase">Ajustes</p>
+  <div style="width:390px;height:812px;border-radius:44px;overflow:hidden;background:#14161A;box-shadow:0 28px 72px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06);position:relative">
+
+    <div style="height:44px;padding:0 28px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:15px;font-weight:600;color:#ECEEF2">22:30</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="5" width="3" height="6" rx="1" fill="#ECEEF2"/><rect x="4.5" y="3" width="3" height="8" rx="1" fill="#ECEEF2"/><rect x="9" y="0" width="3" height="11" rx="1" fill="#ECEEF2"/></svg>
+        <svg width="23" height="11" viewBox="0 0 23 11"><rect x=".5" y=".5" width="19" height="10" rx="2.5" stroke="#ECEEF2" stroke-opacity=".4"/><rect x="20.5" y="3" width="2" height="5" rx="1" fill="#ECEEF2" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.5" fill="#ECEEF2"/></svg>
+      </div>
+    </div>
+
+    <div style="padding:8px 24px 24px"><span style="font-size:28px;font-weight:700;color:#ECEEF2">Ajustes</span></div>
+
+    <div style="padding:0 24px 6px"><span style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C">Hucha</span></div>
+    <div style="margin:0 24px 2px;background:#1C1F25;border-radius:14px 14px 4px 4px">
+      <div style="padding:16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #2C313B">
+        <div><div style="font-size:15px;font-weight:500;color:#ECEEF2;margin-bottom:2px">Base diaria</div><div style="font-size:12px;color:#8A909C">Cantidad base por hábito cumplido</div></div>
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px;font-weight:700;color:#E9C46A;font-variant-numeric:tabular-nums">0,50 €</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><polyline points="5,3 9,7 5,11"/></svg></div>
+      </div>
+      <div style="padding:16px;display:flex;align-items:center;justify-content:space-between">
+        <div><div style="font-size:15px;font-weight:500;color:#ECEEF2;margin-bottom:2px">Incremento por racha</div><div style="font-size:12px;color:#8A909C">Bonus adicional cada 7 días seguidos</div></div>
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px;font-weight:700;color:#E9C46A;font-variant-numeric:tabular-nums">+0,10 €</span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><polyline points="5,3 9,7 5,11"/></svg></div>
+      </div>
+    </div>
+    <div style="margin:2px 24px 20px;background:#1C1F25;border-radius:4px 4px 14px 14px;padding:12px 16px;border-top:1px solid #2C313B">
+      <div style="font-size:11px;color:#8A909C">A los 30 días con 5 hábitos → <span style="color:#E9C46A;font-weight:600">aprox. 75 €</span></div>
+    </div>
+
+    <div style="padding:0 24px 6px"><span style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C">Datos</span></div>
+    <div style="margin:0 24px 20px;background:#1C1F25;border-radius:14px">
+      <div style="padding:16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #2C313B">
+        <div><div style="font-size:15px;font-weight:500;color:#ECEEF2;margin-bottom:2px">Exportar datos</div><div style="font-size:12px;color:#8A909C">Descarga un backup JSON completo</div></div>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2 L9 12 M5 8 L9 12 L13 8"/><path d="M3 14 L15 14"/></svg>
+      </div>
+      <div style="padding:16px;display:flex;align-items:center;justify-content:space-between">
+        <div><div style="font-size:15px;font-weight:500;color:#E07373;margin-bottom:2px">Importar datos</div><div style="font-size:12px;color:#8A909C">Reemplaza todo el historial actual</div></div>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12 L9 2 M5 6 L9 2 L13 6"/><path d="M3 14 L15 14"/></svg>
+      </div>
+    </div>
+
+    <div style="padding:0 24px 6px"><span style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A909C">Info</span></div>
+    <div style="margin:0 24px;background:#1C1F25;border-radius:14px;padding:16px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:15px;font-weight:500;color:#ECEEF2">Versión</span>
+      <span style="font-size:14px;color:#8A909C">1.0.0 — jun 2026</span>
+    </div>
+
+    <div style="position:absolute;bottom:0;left:0;right:0;height:83px;background:#1C1F25;border-top:1px solid #2C313B;display:flex;padding-top:12px">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg><span style="font-size:10px;color:#8A909C">Hoy</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8.5 7 6 11 6 14.5C6 18.09 8.686 21 12 21C15.314 21 18 18.09 18 14.5C18 11 15.5 7 12 3Z"/></svg><span style="font-size:10px;color:#8A909C">Hucha</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg><span style="font-size:10px;color:#8A909C">Estadísticas</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E9C46A" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="15" cy="6" r="2.5" fill="#1C1F25" stroke="#E9C46A" stroke-width="1.5"/><circle cx="9" cy="12" r="2.5" fill="#1C1F25" stroke="#E9C46A" stroke-width="1.5"/><circle cx="15" cy="18" r="2.5" fill="#1C1F25" stroke="#E9C46A" stroke-width="1.5"/></svg><span style="font-size:10px;font-weight:600;color:#E9C46A">Ajustes</span></div>
+    </div>
+  </div>
+</div>
+</div><!-- end row 03 -->
+
+
+<!-- ═══ 04 — ESTADO VACÍO ═══ -->
+<div style="margin-bottom:32px">
+  <div style="display:flex;align-items:baseline;gap:12px">
+    <span style="font-size:11px;font-weight:700;color:#C9A640;letter-spacing:.12em">04</span>
+    <span style="font-size:22px;font-weight:700;color:#1a1a1a">Estado vacío</span>
+    <span style="font-size:14px;color:#888">— primer uso · blob latente esperando</span>
+  </div>
+</div>
+
+<div style="display:flex;gap:48px;align-items:flex-start;margin-bottom:40px">
+<div style="flex:none">
+  <p style="font-size:11px;font-weight:600;color:#666;margin:0 0 14px;letter-spacing:.07em;text-transform:uppercase">Sin hábitos todavía</p>
+  <div style="width:390px;height:812px;border-radius:44px;overflow:hidden;background:#14161A;box-shadow:0 28px 72px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.06);position:relative">
+
+    <div style="height:44px;padding:0 28px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:15px;font-weight:600;color:#ECEEF2">22:30</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <svg width="15" height="11" viewBox="0 0 15 11"><rect x="0" y="5" width="3" height="6" rx="1" fill="#ECEEF2"/><rect x="4.5" y="3" width="3" height="8" rx="1" fill="#ECEEF2"/><rect x="9" y="0" width="3" height="11" rx="1" fill="#ECEEF2"/></svg>
+        <svg width="23" height="11" viewBox="0 0 23 11"><rect x=".5" y=".5" width="19" height="10" rx="2.5" stroke="#ECEEF2" stroke-opacity=".4"/><rect x="20.5" y="3" width="2" height="5" rx="1" fill="#ECEEF2" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.5" fill="#ECEEF2"/></svg>
+      </div>
+    </div>
+
+    <div style="padding:16px 24px 14px;border-bottom:1px solid #2C313B">
+      <div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#8A909C;margin-bottom:4px">Saldo acumulado</div>
+      <div style="display:flex;align-items:baseline;gap:6px;line-height:1">
+        <span style="font-size:52px;font-weight:700;color:rgba(236,238,242,.25);letter-spacing:-3px">0,00</span>
+        <span style="font-size:26px;font-weight:500;color:rgba(236,238,242,.25);letter-spacing:-1px">€</span>
+      </div>
+      <div style="margin-top:10px"><span style="font-size:13px;color:#8A909C">Empieza a añadir hábitos para ver crecer esto.</span></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 40px 0;text-align:center">
+
+      <!-- Mini blob — same technique at small scale -->
+      <div style="position:relative;width:160px;height:160px;margin-bottom:32px">
+        <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% 55%,rgba(233,196,106,.07) 0%,transparent 70%);border-radius:50%"></div>
+        <div style="position:absolute;top:15px;left:15px;width:130px;height:130px;animation:blobMorph 9s ease-in-out infinite;overflow:hidden;background:#1C1F2A;box-shadow:0 8px 32px rgba(0,0,0,.6);transform:translateZ(0)">
+          <div style="position:absolute;bottom:0;left:0;right:0;height:5%;background:rgba(233,196,106,.4)"></div>
+          <div style="position:absolute;top:9%;left:11%;width:32%;height:22%;background:linear-gradient(148deg,rgba(255,255,255,.1) 0%,transparent 100%);border-radius:50%;transform:rotate(-22deg)"></div>
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center">
+            <span style="font-size:28px;font-weight:700;color:rgba(233,196,106,.18)">€</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size:20px;font-weight:700;color:#ECEEF2;letter-spacing:-.5px;margin-bottom:10px">Sin hábitos todavía.</div>
+      <div style="font-size:15px;color:#8A909C;line-height:1.55;margin-bottom:36px">Crea el primero y la hucha<br>empieza a llenarse desde hoy.</div>
+
+      <div style="background:#E9C46A;border-radius:14px;padding:16px 32px;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(233,196,106,.4)">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#14161A" stroke-width="2.5" stroke-linecap="round"><line x1="9" y1="2" x2="9" y2="16"/><line x1="2" y1="9" x2="16" y2="9"/></svg>
+        <span style="font-size:16px;font-weight:700;color:#14161A">Añadir primer hábito</span>
+      </div>
+    </div>
+
+    <div style="position:absolute;bottom:0;left:0;right:0;height:83px;background:#1C1F25;border-top:1px solid #2C313B;display:flex;padding-top:12px">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E9C46A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg><span style="font-size:10px;font-weight:600;color:#E9C46A">Hoy</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8.5 7 6 11 6 14.5C6 18.09 8.686 21 12 21C15.314 21 18 18.09 18 14.5C18 11 15.5 7 12 3Z"/></svg><span style="font-size:10px;color:#8A909C">Hucha</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg><span style="font-size:10px;color:#8A909C">Estadísticas</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A909C" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="15" cy="6" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="9" cy="12" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/><circle cx="15" cy="18" r="2.5" fill="#1C1F25" stroke="#8A909C" stroke-width="1.5"/></svg><span style="font-size:10px;color:#8A909C">Ajustes</span></div>
+    </div>
+  </div>
+</div>
+</div><!-- end row 04 -->
+
+</div><!-- end canvas -->
+</x-dc>
+</body>
+</html>

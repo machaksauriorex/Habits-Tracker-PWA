@@ -1,0 +1,49 @@
+/* ─── Tokens de diseño — Hábitos con Hucha ───────────────────────────────── */
+/* Paleta oscura (única en v1). Fuentes display/body se añaden en Fase 2.5.  */
+
+:root {
+  /* Fondos y superficies */
+  --bg:        #14161A;
+  --surface:   #1C1F25;
+  --surface-2: #242832;
+
+  /* Texto */
+  --text:      #ECEEF2;
+  --text-muted: #8A909C;
+
+  /* Separadores */
+  --hairline:  #2C313B;
+
+  /* Acento del sistema: dorado cálido para la hucha y acciones primarias */
+  /* Los colores de los hábitos los elige el usuario; este acento es el del sistema */
+  --accent:    #E9C46A;
+
+  /* Fuentes (provisionalmente sistema; se reemplaza en Fase 2.5) */
+  --font-display: system-ui, sans-serif;
+  --font-body:    system-ui, sans-serif;
+
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text);
+  background-color: var(--bg);
+
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+#root {
+  min-height: 100dvh;
+}

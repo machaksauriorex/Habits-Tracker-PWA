@@ -1,0 +1,3 @@
+# Normaliza saltos de línea: siempre LF en el repo, CRLF en checkout en Windows
+* text=auto eol=lf
+*.bat text eol=crlf

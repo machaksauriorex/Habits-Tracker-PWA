@@ -9,22 +9,22 @@ function toDateStr(date) {
 }
 
 function addDays(dateStr, n) {
-  const d = new Date(dateStr + 'T00:00:00')
-  d.setDate(d.getDate() + n)
+  const d = new Date(dateStr + 'T00:00:00Z') // UTC: evita el desfase de zona horaria
+  d.setUTCDate(d.getUTCDate() + n)
   return toDateStr(d)
 }
 
 function daysBetween(a, b) {
   return Math.round(
-    (new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 86400000
+    (new Date(b + 'T00:00:00Z') - new Date(a + 'T00:00:00Z')) / 86400000
   )
 }
 
 function getMonday(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00')
-  const dow = d.getDay() // 0=Dom
+  const d = new Date(dateStr + 'T00:00:00Z')
+  const dow = d.getUTCDay() // 0=Dom
   const diff = dow === 0 ? -6 : 1 - dow
-  d.setDate(d.getDate() + diff)
+  d.setUTCDate(d.getUTCDate() + diff)
   return toDateStr(d)
 }
 
@@ -34,12 +34,15 @@ function daysInMonth(year, month) { // month: 1-12
 
 /** Fase vigente en una fecha dada (la más reciente con startDate ≤ date). */
 export function getActivePhase(phases, date) {
+  if (!phases?.length) return null
   let active = null
   for (const p of phases) {
     if (p.startDate <= date) active = p
     else break // phases están ordenadas por startDate ASC
   }
-  return active
+  // Para fechas anteriores a la primera fase (edición retroactiva de días previos
+  // a la creación), se aplica la fase más antigua hacia atrás.
+  return active ?? phases[0]
 }
 
 /** Aportación geométrica para D días a partir del día-hueco k, con tasa r. */
@@ -56,19 +59,22 @@ function esCumplido(value, goalType, goalValue) {
 // ── Generadores de periodos ──────────────────────────────────────────────────
 
 /**
- * Devuelve todos los periodos CERRADOS del hábito hasta `hoy` (exclusive).
- * Cada periodo: { startDate, endDate, days }
+ * Devuelve los periodos del hábito hasta `hoy`.
+ * - Diario: incluye HOY como periodo "abierto" (premia al instante si se cumple,
+ *   pero no penaliza hasta que el día se cierra).
+ * - Semanal/mensual: solo periodos CERRADOS (el actual solo muestra progreso).
+ * `start` es la fecha de inicio del seguimiento (puede ser anterior a la
+ * creación si hay registros retroactivos). Cada periodo: { startDate, endDate, days, abierto }
  */
-function getPeriods(habito, hoy) {
-  const start = habito.createdAt.split('T')[0]
+function getPeriods(habito, hoy, start) {
   const end = habito.archivedAt ? habito.archivedAt.split('T')[0] : hoy
   const periods = []
 
   if (habito.periodo === 'daily') {
-    // Un periodo por día desde `start` hasta antes de `hoy`
+    // Un periodo por día desde `start` hasta hoy incluido (hoy = abierto)
     let d = start
-    while (d < hoy && d <= end) {
-      periods.push({ startDate: d, endDate: d, days: 1 })
+    while (d <= hoy && d <= end) {
+      periods.push({ startDate: d, endDate: d, days: 1, abierto: d === hoy })
       d = addDays(d, 1)
     }
 
@@ -89,9 +95,9 @@ function getPeriods(habito, hoy) {
     }
 
   } else if (habito.periodo === 'monthly') {
-    const startD = new Date(start + 'T00:00:00')
-    let year  = startD.getFullYear()
-    let month = startD.getMonth() + 1 // 1-12
+    const startD = new Date(start + 'T00:00:00Z')
+    let year  = startD.getUTCFullYear()
+    let month = startD.getUTCMonth() + 1 // 1-12
 
     while (true) {
       const dim    = daysInMonth(year, month)
@@ -140,15 +146,13 @@ export function getCurrentPeriodProgress(habito, phases, recMap, hoy) {
   const phase = getActivePhase(sortedPhases, hoy)
   if (!phase) return null
 
-  let periodStart, periodEnd
+  let periodStart
   if (habito.periodo === 'weekly') {
     periodStart = getMonday(hoy)
-    periodEnd   = addDays(periodStart, 6)
   } else if (habito.periodo === 'monthly') {
-    const d = new Date(hoy + 'T00:00:00')
-    const y = d.getFullYear(), m = d.getMonth() + 1
+    const d = new Date(hoy + 'T00:00:00Z')
+    const y = d.getUTCFullYear(), m = d.getUTCMonth() + 1
     periodStart = `${y}-${String(m).padStart(2, '0')}-01`
-    periodEnd   = `${y}-${String(m).padStart(2, '0')}-${String(daysInMonth(y, m)).padStart(2, '0')}`
   } else {
     return null // daily no necesita progreso de periodo
   }
@@ -183,8 +187,12 @@ export function calcularHucha({ habitos, fases, registros, ajustes, hoy: hoyPara
   }
 
   const recMap = {}
+  const firstRecByHabit = {} // fecha del registro más antiguo de cada hábito
   for (const rec of registros) {
     recMap[`${rec.habitId}__${rec.date}`] = rec.value
+    if (!firstRecByHabit[rec.habitId] || rec.date < firstRecByHabit[rec.habitId]) {
+      firstRecByHabit[rec.habitId] = rec.date
+    }
   }
 
   // Recoge TODOS los eventos de todos los hábitos y los ordena cronológicamente
@@ -192,7 +200,12 @@ export function calcularHucha({ habitos, fases, registros, ajustes, hoy: hoyPara
   for (const habito of habitos) {
     const phases = phasesByHabit[habito.id]
     if (!phases?.length) continue
-    for (const period of getPeriods(habito, hoy)) {
+    // El seguimiento empieza en la primera fase, o antes si hay registros previos
+    // (edición retroactiva de días anteriores a la creación del hábito).
+    let start = phases[0].startDate
+    const firstRec = firstRecByHabit[habito.id]
+    if (firstRec && firstRec < start) start = firstRec
+    for (const period of getPeriods(habito, hoy, start)) {
       allEvents.push({ habito, phases, period })
     }
   }
@@ -229,15 +242,20 @@ export function calcularHucha({ habitos, fases, registros, ajustes, hoy: hoyPara
       st.k += D
       st.rachaActual  += 1
       st.rachaRecord   = Math.max(st.rachaRecord, st.rachaActual)
+    } else if (period.abierto) {
+      // Periodo en curso (hoy) aún no cumplido: queda pendiente.
+      // Ni premia ni rompe la racha hasta que el día se cierre.
+      continue
     } else {
-      const penalizacion  = calcAportacion(base, r, st.k, D)
-      const penAplicada   = Math.min(penalizacion, saldo)
-      saldo = Math.max(0, saldo - penalizacion)
+      // Periodo cerrado incumplido: se ROMPE la racha (k y racha → 0), pero
+      // NO se resta nada del saldo (según la tabla de Excel del plan: un día "NO"
+      // deja el total igual). Romper la racha solo hace que el próximo día
+      // cumplido vuelva a sumar la base, no toca el histórico acumulado.
       movimientos.push({
         fecha:    period.endDate,
         habitId:  habito.id,
         periodo:  period.startDate,
-        cantidad: -+(penAplicada.toFixed(6)),
+        cantidad: 0,
         motivo:   'incumplido',
       })
       st.k           = 0

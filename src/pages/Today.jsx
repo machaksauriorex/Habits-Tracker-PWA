@@ -8,7 +8,9 @@ import { PERIODO_LABELS } from '../utils/constants.js'
 const DAY_INITIALS = ['D', 'L', 'M', 'X', 'J', 'V', 'S'] // 0=Dom…6=Sáb
 
 function todayStr() {
-  return new Date().toISOString().split('T')[0]
+  // Fecha LOCAL (no UTC): evita que de madrugada se considere "hoy" el día anterior
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
 function addDays(dateStr, n) {
@@ -84,6 +86,7 @@ export default function Today() {
   const [settings,   setSettings]   = useState(null)
   const [weekOffset, setWeekOffset] = useState(0)
   const [loading,    setLoading]    = useState(true)
+  const [dbError,    setDbError]    = useState(null)
   const [numModal,   setNumModal]   = useState(null) // { habit, date, current }
 
   const weekDays = useMemo(() => getWeekDays(weekOffset), [weekOffset])
@@ -91,16 +94,22 @@ export default function Today() {
 
   // Carga inicial de todos los datos
   async function loadAll() {
-    const [habits, allPhases, records, cfg] = await Promise.all([
-      getHabits(), getAllPhases(), getAllRecords(), getSettings(),
-    ])
-    const map = {}
-    for (const r of records) map[`${r.habitId}__${r.date}`] = r.value
-    setAllHabits(habits)
-    setPhases(allPhases)
-    setRecMap(map)
-    setSettings(cfg)
-    setLoading(false)
+    try {
+      const [habits, allPhases, records, cfg] = await Promise.all([
+        getHabits(), getAllPhases(), getAllRecords(), getSettings(),
+      ])
+      const map = {}
+      for (const r of records) map[`${r.habitId}__${r.date}`] = r.value
+      setAllHabits(habits)
+      setPhases(allPhases)
+      setRecMap(map)
+      setSettings(cfg)
+      setLoading(false)
+    } catch (err) {
+      console.error('Error cargando datos:', err)
+      setDbError('No se pudieron cargar los datos. Recarga la página.')
+      setLoading(false)
+    }
   }
 
   useEffect(() => { loadAll() }, [])
@@ -120,8 +129,8 @@ export default function Today() {
       const [habitId, date] = key.split('__')
       return { habitId, date, value }
     })
-    return calcularHucha({ habitos: allHabits, fases: phases, registros, ajustes: settings })
-  }, [allHabits, phases, recMap, settings])
+    return calcularHucha({ habitos: allHabits, fases: phases, registros, ajustes: settings, hoy })
+  }, [allHabits, phases, recMap, settings, hoy])
 
   // ── Acciones sobre registros ───────────────────────────────────────────────
 
@@ -178,6 +187,14 @@ export default function Today() {
     return <div className="today-page"><p className="loading-text">Cargando…</p></div>
   }
 
+  if (dbError) {
+    return (
+      <div className="today-page">
+        <p className="loading-text" style={{ color: '#ef4444' }}>{dbError}</p>
+      </div>
+    )
+  }
+
   return (
     <div className="today-page">
       {/* Cabecera con saldo */}
@@ -223,7 +240,6 @@ export default function Today() {
         <ul className="habit-rows">
           {activeHabits.map(habit => {
             const ps = phasesByHabit[habit.id] ?? []
-            const activePhase = getActivePhase(ps, hoy)
             const progress = habit.periodo !== 'daily'
               ? getCurrentPeriodProgress(habit, ps, recMap, hoy)
               : null
@@ -248,7 +264,6 @@ export default function Today() {
                 {/* Celdas de días */}
                 {weekDays.map(date => {
                   const { value, hasVal, done, isFuture } = cellInfo(habit, date)
-                  const isCreatedAfter = date < habit.createdAt.split('T')[0]
 
                   return (
                     <button
@@ -257,11 +272,11 @@ export default function Today() {
                         'day-cell',
                         done ? 'done' : hasVal ? 'partial' : '',
                         date === hoy ? 'today' : '',
-                        isFuture || isCreatedAfter ? 'inactive' : '',
+                        isFuture ? 'inactive' : '',
                       ].filter(Boolean).join(' ')}
                       style={done ? { background: habit.color, borderColor: habit.color } : { borderColor: habit.color + '55' }}
-                      onClick={() => !isFuture && !isCreatedAfter && handleCellTap(habit, date)}
-                      disabled={isFuture || isCreatedAfter}
+                      onClick={() => !isFuture && handleCellTap(habit, date)}
+                      disabled={isFuture}
                     >
                       {habit.tipo === 'quantitative' && hasVal ? value : ''}
                     </button>

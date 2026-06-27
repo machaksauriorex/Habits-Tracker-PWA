@@ -1,7 +1,7 @@
 import { openDB } from 'idb'
 
 const DB_NAME = 'habitos-db'
-const DB_VERSION = 3
+const DB_VERSION = 4
 
 let dbPromise = null
 
@@ -20,10 +20,15 @@ export function getDB() {
           phasesStore.createIndex('by-habit', 'habitId')
         }
         if (oldVersion < 3) {
-          // Clave compuesta [habitId, date] → un único registro por hábito y día
-          db.createObjectStore('records', { keyPath: ['habitId', 'date'] })
+          // id = 'habitId__date' → clave única por hábito y día
+          db.createObjectStore('records', { keyPath: 'id' })
           // Ajustes globales (base e incremento de la hucha)
           db.createObjectStore('settings', { keyPath: 'id' })
+        }
+        if (oldVersion === 3) {
+          // v3 inicial tenía keyPath compuesto ['habitId','date'] → recrear con string simple
+          if (db.objectStoreNames.contains('records')) db.deleteObjectStore('records')
+          db.createObjectStore('records', { keyPath: 'id' })
         }
       },
     })
@@ -142,7 +147,7 @@ export async function getAllRecords() {
 /** Crea o actualiza el registro de un hábito en una fecha. */
 export async function upsertRecord(habitId, date, value) {
   const db = await getDB()
-  const record = { habitId, date, value }
+  const record = { id: `${habitId}__${date}`, habitId, date, value }
   await db.put('records', record)
   return record
 }
@@ -150,7 +155,7 @@ export async function upsertRecord(habitId, date, value) {
 /** Borra el registro de un hábito en una fecha (equivale a "no marcado"). */
 export async function deleteRecord(habitId, date) {
   const db = await getDB()
-  await db.delete('records', [habitId, date])
+  await db.delete('records', `${habitId}__${date}`)
 }
 
 // ── Settings ─────────────────────────────────────────────────────

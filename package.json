@@ -8,7 +8,9 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "cross-env TZ=UTC vitest run"
+    "test": "cross-env TZ=UTC vitest run",
+    "test:tz": "cross-env TZ=Europe/Madrid vitest run",
+    "test:all": "npm run test && npm run test:tz"
   },
   "dependencies": {
     "idb": "^8.0.3",

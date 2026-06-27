@@ -1,3 +1,212 @@
+/* ─── Shell de la app ────────────────────────────────────────────────── */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 72px; /* espacio para la bottom nav */
+}
+
+/* ─── Bottom navigation ───────────────────────────────────────────────── */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: var(--surface);
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 50;
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 8px 4px;
+}
+
+.bottom-nav-icon { font-size: 20px; }
+
+.bottom-nav-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.bottom-nav-item.active .bottom-nav-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ─── Pantalla Hoy ────────────────────────────────────────────────────── */
+
+.today-page {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.today-header {
+  padding: 20px 16px 12px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.saldo-label {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.saldo-valor {
+  margin: 2px 0 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -1px;
+}
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.week-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Cuadrícula de días */
+
+.grid-header {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.habit-label-col {
+  flex: 0 0 140px;
+  min-width: 0;
+}
+
+.day-col-header {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 6px 0;
+}
+
+.day-col-header.today {
+  color: var(--accent);
+}
+
+/* Filas de hábitos */
+
+.habit-rows {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.habit-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--hairline);
+  gap: 4px;
+  min-height: 52px;
+}
+
+.habit-row-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
+.habit-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.habit-row-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.period-progress {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Celdas de día */
+
+.day-cell {
+  flex: 1;
+  aspect-ratio: 1;
+  max-width: 40px;
+  border-radius: 8px;
+  border: 1.5px solid var(--hairline);
+  background: transparent;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day-cell.done {
+  color: #14161a;
+}
+
+.day-cell.today {
+  border-width: 2px;
+}
+
+.day-cell.inactive {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.day-cell:not(.inactive):active {
+  opacity: 0.7;
+}
+
 /* ─── Fase 1: Botones ─────────────────────────────────────────────────── */
 
 button { font-family: inherit; }

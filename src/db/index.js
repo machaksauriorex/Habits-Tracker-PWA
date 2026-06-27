@@ -1,7 +1,7 @@
 import { openDB } from 'idb'
 
 const DB_NAME = 'habitos-db'
-const DB_VERSION = 2
+const DB_VERSION = 3
 
 let dbPromise = null
 
@@ -18,6 +18,12 @@ export function getDB() {
 
           const phasesStore = db.createObjectStore('phases', { keyPath: 'id' })
           phasesStore.createIndex('by-habit', 'habitId')
+        }
+        if (oldVersion < 3) {
+          // Clave compuesta [habitId, date] → un único registro por hábito y día
+          db.createObjectStore('records', { keyPath: ['habitId', 'date'] })
+          // Ajustes globales (base e incremento de la hucha)
+          db.createObjectStore('settings', { keyPath: 'id' })
         }
       },
     })
@@ -119,4 +125,44 @@ export async function getPhasesByHabit(habitId) {
   const db = await getDB()
   const phases = await db.getAllFromIndex('phases', 'by-habit', habitId)
   return phases.sort((a, b) => a.startDate.localeCompare(b.startDate))
+}
+
+export async function getAllPhases() {
+  const db = await getDB()
+  return db.getAll('phases')
+}
+
+// ── Records ──────────────────────────────────────────────────────
+
+export async function getAllRecords() {
+  const db = await getDB()
+  return db.getAll('records')
+}
+
+/** Crea o actualiza el registro de un hábito en una fecha. */
+export async function upsertRecord(habitId, date, value) {
+  const db = await getDB()
+  const record = { habitId, date, value }
+  await db.put('records', record)
+  return record
+}
+
+/** Borra el registro de un hábito en una fecha (equivale a "no marcado"). */
+export async function deleteRecord(habitId, date) {
+  const db = await getDB()
+  await db.delete('records', [habitId, date])
+}
+
+// ── Settings ─────────────────────────────────────────────────────
+
+const DEFAULT_SETTINGS = { id: 'piggybank', base: 0.20, incremento: 0.05 }
+
+export async function getSettings() {
+  const db = await getDB()
+  return (await db.get('settings', 'piggybank')) ?? DEFAULT_SETTINGS
+}
+
+export async function saveSettings(data) {
+  const db = await getDB()
+  await db.put('settings', { id: 'piggybank', ...data })
 }

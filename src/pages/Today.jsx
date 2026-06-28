@@ -1,5 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { getHabits, getAllPhases, getAllRecords, getSettings, upsertRecord, deleteRecord } from '../db/index.js'
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, arrayMove, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { getHabits, getAllPhases, getAllRecords, getSettings, upsertRecord, deleteRecord, reorderHabits } from '../db/index.js'
 import { calcularHucha, getActivePhase, getPeriodInfo } from '../utils/piggybank.js'
 import { PERIODO_LABELS } from '../utils/constants.js'
 import { useCountUp } from '../hooks/useCountUp.js'
@@ -104,6 +107,28 @@ function NumberModal({ habit, date, current, onSave, onCancel }) {
   )
 }
 
+// ── Tarjeta arrastrable (mantener pulsado para reordenar) ─────────────────────
+
+function SortableCard({ id, children }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 5 : undefined,
+  }
+  return (
+    <li
+      ref={setNodeRef}
+      style={style}
+      className={`habit-card${isDragging ? ' dragging' : ''}`}
+      {...attributes}
+      {...listeners}
+    >
+      {children}
+    </li>
+  )
+}
+
 // ── Today ────────────────────────────────────────────────────────────────────
 
 export default function Today({ onNew }) {
@@ -118,6 +143,12 @@ export default function Today({ onNew }) {
 
   const weekDays = useMemo(() => getWeekDays(weekOffset), [weekOffset])
   const hoy      = todayStr()
+
+  // Arrastre para reordenar: hay que MANTENER PULSADO ~220ms antes de arrastrar,
+  // así los toques rápidos en las celdas siguen funcionando como marcado.
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { delay: 220, tolerance: 8 } }),
+  )
 
   // Carga inicial de todos los datos
   async function loadAll() {
@@ -259,7 +290,22 @@ export default function Today({ onNew }) {
     return `${activePhase.goalType === 'max' ? 'máx.' : 'mín.'} ${activePhase.goalValue}${u}`
   }
 
-  const activeHabits = allHabits.filter(h => h.status === 'active')
+  const activeHabits = allHabits
+    .filter(h => h.status === 'active')
+    .sort((a, b) => (a.orden ?? 1e9) - (b.orden ?? 1e9) || a.createdAt.localeCompare(b.createdAt))
+
+  function handleDragEnd(event) {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    const ids = activeHabits.map(h => h.id)
+    const newIds = arrayMove(ids, ids.indexOf(active.id), ids.indexOf(over.id))
+    // Orden optimista en memoria + persistencia
+    setAllHabits(prev => prev.map(h => {
+      const i = newIds.indexOf(h.id)
+      return i === -1 ? h : { ...h, orden: i }
+    }))
+    reorderHabits(newIds)
+  }
 
   if (loading) {
     return <div className="today-page"><p className="loading-text">Cargando…</p></div>
@@ -334,75 +380,79 @@ export default function Today({ onNew }) {
           <p>Toca el botón <strong>+</strong> para crear el primero.</p>
         </div>
       ) : (
-        <ul className="habit-list">
-          {activeHabits.map(habit => {
-            const ps = phasesByHabit[habit.id] ?? []
-            const activePhase = getActivePhase(ps, hoy)
-            const periodInfo = habit.periodo !== 'daily'
-              ? getPeriodInfo(habit, ps, recMap, weekDays[0], hoy)
-              : null
-            const subtitle = habitSubtitle(habit, activePhase, periodInfo)
-            // Máximo superado en la semana visible → se marca la semana como incumplida
-            const failed = !!periodInfo && periodInfo.goalType === 'max' && periodInfo.total > periodInfo.goal
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={activeHabits.map(h => h.id)} strategy={verticalListSortingStrategy}>
+            <ul className="habit-list">
+              {activeHabits.map(habit => {
+                const ps = phasesByHabit[habit.id] ?? []
+                const activePhase = getActivePhase(ps, hoy)
+                const periodInfo = habit.periodo !== 'daily'
+                  ? getPeriodInfo(habit, ps, recMap, weekDays[0], hoy)
+                  : null
+                const subtitle = habitSubtitle(habit, activePhase, periodInfo)
+                // Máximo superado en la semana visible → se marca la semana como incumplida
+                const failed = !!periodInfo && periodInfo.goalType === 'max' && periodInfo.total > periodInfo.goal
 
-            return (
-              <li key={habit.id} className="habit-card">
-                <span className="habit-bar" style={{ background: habit.color }} />
-                <div className="habit-label-col">
-                  <div className="habit-row-text">
-                    <span className="habit-row-name">{habit.nombre}</span>
-                    <span className="habit-row-sub">{subtitle}</span>
-                  </div>
-                </div>
+                return (
+                  <SortableCard key={habit.id} id={habit.id}>
+                    <span className="habit-bar" style={{ background: habit.color }} />
+                    <div className="habit-label-col">
+                      <div className="habit-row-text">
+                        <span className="habit-row-name">{habit.nombre}</span>
+                        <span className="habit-row-sub">{subtitle}</span>
+                      </div>
+                    </div>
 
-                {/* Celdas de días */}
-                <div className={`day-track${failed ? ' failed' : ''}`}>
-                  {weekDays.map(date => {
-                    const { value, hasVal, done, isFuture, missing } = cellInfo(habit, date)
-                    const color = habit.color
-                    const isBool = habit.tipo === 'boolean'
+                    {/* Celdas de días */}
+                    <div className={`day-track${failed ? ' failed' : ''}`}>
+                      {weekDays.map(date => {
+                        const { value, hasVal, done, isFuture, missing } = cellInfo(habit, date)
+                        const color = habit.color
+                        const isBool = habit.tipo === 'boolean'
 
-                    let variant = 'empty'
-                    let style
-                    let content = null
+                        let variant = 'empty'
+                        let style
+                        let content = null
 
-                    if (isFuture) {
-                      variant = 'future'
-                    } else if (done) {
-                      variant = 'done'
-                      style = { background: color, borderColor: color }
-                      content = isBool
-                        ? <Check ink={contrastInk(color)} />
-                        : <span style={{ color: contrastInk(color) }}>{value}</span>
-                    } else if (hasVal) {
-                      variant = 'partial'
-                      style = { background: hexA(color, 0.30), borderColor: 'transparent' }
-                      content = isBool ? null : <span style={{ color: 'rgba(255,255,255,.78)' }}>{value}</span>
-                    } else if (missing) {
-                      variant = 'missing'
-                      content = '0?'
-                    }
+                        if (isFuture) {
+                          variant = 'future'
+                        } else if (done) {
+                          variant = 'done'
+                          style = { background: color, borderColor: color }
+                          content = isBool
+                            ? <Check ink={contrastInk(color)} />
+                            : <span style={{ color: contrastInk(color) }}>{value}</span>
+                        } else if (hasVal) {
+                          variant = 'partial'
+                          style = { background: hexA(color, 0.30), borderColor: 'transparent' }
+                          content = isBool ? null : <span style={{ color: 'rgba(255,255,255,.78)' }}>{value}</span>
+                        } else if (missing) {
+                          variant = 'missing'
+                          content = '0?'
+                        }
 
-                    return (
-                      <button
-                        key={date}
-                        className={[
-                          'day-cell', variant,
-                          date === hoy ? 'today' : '',
-                        ].filter(Boolean).join(' ')}
-                        style={style}
-                        onClick={() => !isFuture && handleCellTap(habit, date)}
-                        disabled={isFuture}
-                      >
-                        {content}
-                      </button>
-                    )
-                  })}
-                </div>
-              </li>
-            )
-          })}
-        </ul>
+                        return (
+                          <button
+                            key={date}
+                            className={[
+                              'day-cell', variant,
+                              date === hoy ? 'today' : '',
+                            ].filter(Boolean).join(' ')}
+                            style={style}
+                            onClick={() => !isFuture && handleCellTap(habit, date)}
+                            disabled={isFuture}
+                          >
+                            {content}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </SortableCard>
+                )
+              })}
+            </ul>
+          </SortableContext>
+        </DndContext>
       )}
 
       {/* Botón flotante para crear hábito */}

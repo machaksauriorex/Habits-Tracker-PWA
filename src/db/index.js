@@ -101,6 +101,17 @@ export async function updateHabitWithPhases(habitId, habitData, phasesData) {
   await tx.done
 }
 
+/** Persiste el orden de los hábitos (índice = posición). */
+export async function reorderHabits(orderedIds) {
+  const db = await getDB()
+  const tx = db.transaction('habits', 'readwrite')
+  for (let i = 0; i < orderedIds.length; i++) {
+    const h = await tx.objectStore('habits').get(orderedIds[i])
+    if (h) await tx.objectStore('habits').put({ ...h, orden: i })
+  }
+  await tx.done
+}
+
 export async function archiveHabit(habitId) {
   const db = await getDB()
   const habit = await db.get('habits', habitId)

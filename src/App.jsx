@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import BottomNav from './components/BottomNav.jsx'
 import Today from './pages/Today.jsx'
-import HabitList from './components/HabitList.jsx'
 import HabitForm from './components/HabitForm.jsx'
 import Stats from './pages/Stats.jsx'
+import Piggybank from './pages/Piggybank.jsx'
+import Settings from './pages/Settings.jsx'
 import './App.css'
 
 export default function App() {
@@ -24,22 +25,10 @@ export default function App() {
       <div className="app-content">
         {tab === 'today'     && <Today onNew={openCreate} />}
         {tab === 'stats'     && <Stats />}
-        {tab === 'piggybank' && <PlaceholderPage title="Hucha" emoji="🐷" fase="2+" />}
-        {tab === 'settings'  && (
-          <HabitList onNew={openCreate} onEdit={openEdit} />
-        )}
+        {tab === 'piggybank' && <Piggybank />}
+        {tab === 'settings'  && <Settings onNew={openCreate} onEdit={openEdit} />}
       </div>
       <BottomNav current={tab} onChange={setTab} />
-    </div>
-  )
-}
-
-function PlaceholderPage({ title, emoji, fase }) {
-  return (
-    <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--text-muted)' }}>
-      <p style={{ fontSize: 48 }}>{emoji}</p>
-      <p style={{ fontSize: 20, fontWeight: 600, color: 'var(--text)' }}>{title}</p>
-      <p>Disponible en la Fase {fase}</p>
     </div>
   )
 }

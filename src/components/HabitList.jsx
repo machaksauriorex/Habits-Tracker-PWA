@@ -3,7 +3,7 @@ import { getHabits, deleteHabit, restoreHabit } from '../db/index.js'
 import { PERIODO_LABELS } from '../utils/constants.js'
 import ConfirmDialog from './ConfirmDialog.jsx'
 
-export default function HabitList({ onNew, onEdit }) {
+export default function HabitList({ onNew, onEdit, embedded = false }) {
   const [habits, setHabits] = useState([])
   const [loading, setLoading] = useState(true)
   const [showArchived, setShowArchived] = useState(false)
@@ -35,18 +35,26 @@ export default function HabitList({ onNew, onEdit }) {
 
   if (loading) {
     return (
-      <div className="habits-page">
+      <div className={embedded ? '' : 'habits-page'}>
         <p className="loading-text">Cargando…</p>
       </div>
     )
   }
 
   return (
-    <div className="habits-page">
-      <header className="habits-header">
-        <h1>Mis hábitos</h1>
-        <button className="btn-fab" onClick={onNew} aria-label="Nuevo hábito">+</button>
-      </header>
+    <div className={embedded ? 'habits-embedded' : 'habits-page'}>
+      {!embedded && (
+        <header className="habits-header">
+          <h1>Mis hábitos</h1>
+          <button className="btn-fab" onClick={onNew} aria-label="Nuevo hábito">+</button>
+        </header>
+      )}
+      {embedded && (
+        <button className="settings-row settings-add-habit" onClick={onNew}>
+          <span className="settings-row-title">Nuevo hábito</span>
+          <span className="settings-add-plus">+</span>
+        </button>
+      )}
 
       {active.length === 0 ? (
         <div className="empty-state">

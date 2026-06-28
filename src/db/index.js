@@ -171,3 +171,37 @@ export async function saveSettings(data) {
   const db = await getDB()
   await db.put('settings', { id: 'piggybank', ...data })
 }
+
+// ── Backup (exportar / importar) ─────────────────────────────────
+
+/** Devuelve TODO el contenido de la app como objeto serializable. */
+export async function exportData() {
+  const db = await getDB()
+  const [habits, phases, records, settings] = await Promise.all([
+    db.getAll('habits'), db.getAll('phases'), db.getAll('records'), db.getAll('settings'),
+  ])
+  return {
+    app: 'habitos-con-hucha',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    habits, phases, records, settings,
+  }
+}
+
+/** Reemplaza TODO el historial por el del backup. Valida la forma mínima. */
+export async function importData(data) {
+  if (!data || data.app !== 'habitos-con-hucha' ||
+      !Array.isArray(data.habits) || !Array.isArray(data.phases) || !Array.isArray(data.records)) {
+    throw new Error('El archivo no es un backup válido de Hábitos con Hucha.')
+  }
+  const db = await getDB()
+  const tx = db.transaction(['habits', 'phases', 'records', 'settings'], 'readwrite')
+  for (const name of ['habits', 'phases', 'records', 'settings']) {
+    await tx.objectStore(name).clear()
+  }
+  for (const h of data.habits)   await tx.objectStore('habits').put(h)
+  for (const p of data.phases)   await tx.objectStore('phases').put(p)
+  for (const r of data.records)  await tx.objectStore('records').put(r)
+  for (const s of (data.settings ?? [])) await tx.objectStore('settings').put(s)
+  await tx.done
+}

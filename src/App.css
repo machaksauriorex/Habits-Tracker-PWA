@@ -793,22 +793,21 @@ button { font-family: inherit; }
 .hm-cols {
   display: flex;
   gap: 2px;
-  overflow-x: auto;
   flex: 1;
-  scrollbar-width: none;
+  min-width: 0; /* permite que las columnas se encojan para repartir el ancho */
 }
-.hm-cols::-webkit-scrollbar { display: none; }
 
 .hm-col {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  flex-shrink: 0;
+  flex: 1;        /* cada columna ocupa la misma fracción del ancho disponible */
+  min-width: 0;
 }
 
 .hm-cell {
-  width: var(--sz, 12px);
-  height: var(--sz, 12px);
+  width: 100%;
+  height: var(--hm-h, 14px);
   border-radius: 3px;
   background: var(--bg);
 }

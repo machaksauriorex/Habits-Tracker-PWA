@@ -266,37 +266,41 @@ function Heatmap({ grid, getColor, today, small }) {
 // ── Gráfica de barras (genérica) ───────────────────────────────────────────────
 
 function Bars({ data, goal, color, avg, showVals }) {
-  const maxV = Math.max(...data.map(d => d.val ?? 0), goal ?? 0, 1)
+  // Headroom para que ninguna barra toque el techo (deja sitio a las etiquetas
+  // y evita que objetivo y barra máxima se peguen al borde superior).
+  const rawMax = Math.max(...data.map(d => d.val ?? 0), goal ?? 0, 1)
+  const maxV   = rawMax * 1.15
+  const pctOf  = v => `${Math.max(Math.min(v / maxV, 1) * 100, 0)}%`
   return (
     <div className="bars">
-      {(goal != null || avg != null) && (
-        <div className="bars-plot-overlay">
-          {goal != null && (
-            <div className="bar-line bar-line-goal" style={{ bottom: `${Math.min(goal / maxV, 1) * 100}%` }}>
-              <span className="bar-line-tag">obj. {fmtN(goal, 0)}</span>
-            </div>
-          )}
-          {avg != null && avg > 0 && (
-            <div className="bar-line bar-line-avg" style={{ bottom: `${Math.min(avg / maxV, 1) * 100}%` }} />
-          )}
-        </div>
-      )}
-      <div className="bars-row">
-        {data.map((d, i) => {
-          const pct = d.val != null ? Math.min((d.val / maxV) * 100, 100) : 0
-          return (
+      {/* Área de dibujo: barras y líneas comparten el MISMO sistema de coordenadas */}
+      <div className="bars-plot">
+        {goal != null && (
+          <div className="bar-line bar-line-goal" style={{ bottom: pctOf(goal) }}>
+            <span className="bar-line-tag">obj. {fmtN(goal, 0)}</span>
+          </div>
+        )}
+        {avg != null && avg > 0 && (
+          <div className="bar-line bar-line-avg" style={{ bottom: pctOf(avg) }} />
+        )}
+        <div className="bars-row">
+          {data.map((d, i) => (
             <div key={i} className="bar-col">
-              {showVals && d.val != null && <span className="bar-val tnum">{fmtN(d.val, 0)}</span>}
-              <div className="bar-track">
+              {d.val != null && (
                 <div className="bar-fill" style={{
-                  height: `${pct}%`,
-                  background: d.val == null ? 'transparent' : (d.met ? color : hexA(color, 0.3)),
-                }} />
-              </div>
-              <span className="bar-label">{d.label}</span>
+                  height: pctOf(d.val),
+                  background: d.met ? color : hexA(color, 0.3),
+                }}>
+                  {showVals && d.val > 0 && <span className="bar-val tnum">{fmtN(d.val, 0)}</span>}
+                </div>
+              )}
             </div>
-          )
-        })}
+          ))}
+        </div>
+      </div>
+      {/* Etiquetas del eje X, fuera del área de dibujo para no descuadrar la escala */}
+      <div className="bars-xaxis">
+        {data.map((d, i) => <span key={i} className="bar-label">{d.label}</span>)}
       </div>
     </div>
   )

@@ -1011,61 +1011,27 @@ button { font-family: inherit; }
 
 /* Gráfica de barras */
 .bars {
+  margin-top: 16px; /* hueco para la etiqueta "obj." cuando el objetivo está alto */
+}
+
+.bars-plot {
   position: relative;
-  padding-top: 14px;
+  height: 110px;
 }
 
-.bars-plot-overlay {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 14px;
-  bottom: 18px; /* deja hueco para las etiquetas inferiores */
-  pointer-events: none;
-  z-index: 1;
-}
-
-.bar-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 0;
-  border-top-width: 1.5px;
-}
-.bar-line-goal { border-top: 1.5px dashed var(--accent); opacity: 0.85; }
-.bar-line-avg  { border-top: 1.5px dotted var(--text-muted); opacity: 0.7; }
-
-.bar-line-tag {
-  position: absolute;
-  right: 0;
-  top: -8px;
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--accent);
-  background: var(--bg);
-  padding: 0 3px;
-}
-
+/* Barras: ocupan exactamente el área de dibujo (mismo sistema que las líneas) */
 .bars-row {
+  position: absolute;
+  inset: 0;
   display: flex;
   gap: 4px;
-  height: 110px;
   align-items: flex-end;
 }
 
 .bar-col {
   flex: 1;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
   height: 100%;
-}
-
-.bar-track {
-  flex: 1;
-  width: 100%;
   background: var(--surface);
   border-radius: 4px;
   display: flex;
@@ -1076,19 +1042,55 @@ button { font-family: inherit; }
 .bar-fill {
   width: 100%;
   border-radius: 4px;
+  display: flex;
+  justify-content: center;
   transition: height 0.3s ease;
-}
-
-.bar-label {
-  font-size: 9px;
-  height: 12px;
-  color: var(--text-muted);
-  font-weight: 500;
 }
 
 .bar-val {
   font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  padding-top: 3px;
+}
+
+/* Líneas de referencia: mismo origen (bottom) y alto que las barras */
+.bar-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.bar-line-goal { border-top: 1.5px dashed var(--accent); opacity: 0.9; }
+.bar-line-avg  { border-top: 1.5px dotted var(--text-muted); opacity: 0.7; }
+
+.bar-line-tag {
+  position: absolute;
+  right: 0;
+  top: -8px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--bg);
+  padding: 0 3px;
+}
+
+/* Eje X, fuera del área de dibujo */
+.bars-xaxis {
+  display: flex;
+  gap: 4px;
+  margin-top: 5px;
+}
+
+.bar-label {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-size: 9px;
   color: var(--text-muted);
+  font-weight: 500;
 }
 
 /* Pastilla de tendencia */

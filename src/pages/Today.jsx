@@ -70,7 +70,7 @@ function NumberModal({ habit, date, current, onSave, onCancel }) {
   return (
     <div className="confirm-overlay" onClick={onCancel}>
       <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
-        <h3>{habit.emoji ? `${habit.emoji} ` : ''}{habit.nombre}</h3>
+        <h3>{habit.nombre}</h3>
         <p style={{ color: 'var(--text-muted)', margin: '0 0 16px', fontSize: 13 }}>
           {new Date(date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
         </p>
@@ -244,13 +244,14 @@ export default function Today({ onNew }) {
   }
 
   function habitSubtitle(habit, activePhase, periodInfo) {
+    const u = habit.unidad ? ` ${habit.unidad}` : ''
     if (habit.periodo !== 'daily' && periodInfo) {
       const lim = periodInfo.goalType === 'max' ? '≤' : ''
-      return `${lim}${periodInfo.total}/${periodInfo.goal} ${PERIODO_LABELS[habit.periodo].toLowerCase()}`
+      return `${lim}${periodInfo.total}/${periodInfo.goal}${u} ${PERIODO_LABELS[habit.periodo].toLowerCase()}`
     }
     if (habit.tipo === 'boolean') return 'Diario'
     if (!activePhase) return 'Diario'
-    return `${activePhase.goalType === 'max' ? 'máx.' : 'mín.'} ${activePhase.goalValue}`
+    return `${activePhase.goalType === 'max' ? 'máx.' : 'mín.'} ${activePhase.goalValue}${u}`
   }
 
   const activeHabits = allHabits.filter(h => h.status === 'active')
@@ -344,9 +345,7 @@ export default function Today({ onNew }) {
                 <span className="habit-bar" style={{ background: habit.color }} />
                 <div className="habit-label-col">
                   <div className="habit-row-text">
-                    <span className="habit-row-name">
-                      {habit.emoji ? `${habit.emoji} ${habit.nombre}` : habit.nombre}
-                    </span>
+                    <span className="habit-row-name">{habit.nombre}</span>
                     <span className="habit-row-sub">{subtitle}</span>
                   </div>
                 </div>

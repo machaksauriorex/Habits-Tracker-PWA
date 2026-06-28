@@ -24,10 +24,10 @@ export default function HabitForm({ habit, onSave, onBack }) {
 
   const [form, setForm] = useState({
     nombre: habit?.nombre ?? '',
-    emoji: habit?.emoji ?? '',
     color: habit?.color ?? HABIT_COLORS[0],
     tipo: habit?.tipo ?? 'boolean',
     periodo: habit?.periodo ?? 'daily',
+    unidad: habit?.unidad ?? '',
   })
   const [phases, setPhases] = useState([makePhase()])
   const [error, setError] = useState('')
@@ -137,30 +137,17 @@ export default function HabitForm({ habit, onSave, onBack }) {
 
       <div className="form-body">
 
-        {/* Emoji + Nombre */}
-        <div className="form-row">
-          <div className="form-group narrow">
-            <label htmlFor="emoji">Emoji</label>
-            <input
-              id="emoji"
-              type="text"
-              value={form.emoji}
-              onChange={e => setField('emoji', e.target.value)}
-              placeholder="🏃"
-              className="emoji-input"
-            />
-          </div>
-          <div className="form-group grow">
-            <label htmlFor="nombre">Nombre <span className="required">*</span></label>
-            <input
-              id="nombre"
-              type="text"
-              value={form.nombre}
-              onChange={e => setField('nombre', e.target.value)}
-              placeholder="Ej: Ejercicio"
-              maxLength={50}
-            />
-          </div>
+        {/* Nombre */}
+        <div className="form-group">
+          <label htmlFor="nombre">Nombre <span className="required">*</span></label>
+          <input
+            id="nombre"
+            type="text"
+            value={form.nombre}
+            onChange={e => setField('nombre', e.target.value)}
+            placeholder="Ej: Ejercicio"
+            maxLength={50}
+          />
         </div>
 
         {/* Color */}
@@ -227,6 +214,22 @@ export default function HabitForm({ habit, onSave, onBack }) {
             {isEditing && (
               <p className="form-hint">El periodo no cambia una vez creado el hábito.</p>
             )}
+          </div>
+        )}
+
+        {/* Unidad (opcional, solo cuantitativos) */}
+        {form.tipo === 'quantitative' && (
+          <div className="form-group">
+            <label htmlFor="unidad">Unidad <span className="form-optional">(opcional)</span></label>
+            <input
+              id="unidad"
+              type="text"
+              value={form.unidad}
+              onChange={e => setField('unidad', e.target.value)}
+              placeholder="Ej: páginas, cigarros, vasos"
+              maxLength={20}
+            />
+            <p className="form-hint">Se mostrará junto a los números en las estadísticas.</p>
           </div>
         )}
 

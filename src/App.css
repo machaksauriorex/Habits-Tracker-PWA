@@ -422,8 +422,6 @@ button { font-family: inherit; }
   min-width: 0;
 }
 
-.habit-emoji { font-size: 18px; flex-shrink: 0; }
-
 .habit-name {
   font-size: 15px;
   font-weight: 500;
@@ -506,19 +504,11 @@ button { font-family: inherit; }
   overflow-y: auto;
 }
 
-.form-row {
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-}
-
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.form-group.narrow { width: 76px; flex-shrink: 0; }
-.form-group.grow { flex: 1; min-width: 0; }
 
 .form-group label {
   font-size: 12px;
@@ -528,6 +518,7 @@ button { font-family: inherit; }
   letter-spacing: 0.07em;
 }
 .required { color: var(--accent); }
+.form-optional { color: var(--text-muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
 
 .form-group input {
   background: var(--surface);
@@ -543,12 +534,6 @@ button { font-family: inherit; }
   outline: 2px solid var(--accent);
   outline-offset: -1px;
   border-color: transparent;
-}
-
-.emoji-input {
-  text-align: center !important;
-  font-size: 24px !important;
-  padding: 8px !important;
 }
 
 .form-hint {

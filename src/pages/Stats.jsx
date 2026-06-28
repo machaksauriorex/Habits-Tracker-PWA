@@ -396,7 +396,7 @@ function StatsHabit({ habit, phasesByHabit, recMap, movimientos, rachas, onBack,
         </button>
         <div className="stats-habit-title">
           <span className="stats-habit-bar" style={{ background: habit.color }} />
-          <h2>{habit.emoji ? `${habit.emoji} ` : ''}{habit.nombre}</h2>
+          <h2>{habit.nombre}</h2>
         </div>
       </header>
 
@@ -439,7 +439,9 @@ function StatsHabit({ habit, phasesByHabit, recMap, movimientos, rachas, onBack,
               </div>
               <div className="kpi-tile">
                 <span className="kpi-label">Total</span>
-                <span className="kpi-value tnum">{fmtN(summary.total, 0)}</span>
+                <span className="kpi-value tnum">
+                  {fmtN(summary.total, 0)}{habit.unidad && <span className="kpi-unit"> {habit.unidad}</span>}
+                </span>
               </div>
               {summary.mode === 'daily' ? (
                 summary.goalType === 'max' ? (
@@ -452,7 +454,10 @@ function StatsHabit({ habit, phasesByHabit, recMap, movimientos, rachas, onBack,
                 ) : (
                   <div className="kpi-tile">
                     <span className="kpi-label">Mejor día</span>
-                    <span className="kpi-value tnum">{summary.best != null ? fmtN(summary.best, 0) : '—'}</span>
+                    <span className="kpi-value tnum">
+                      {summary.best != null ? fmtN(summary.best, 0) : '—'}
+                      {summary.best != null && habit.unidad && <span className="kpi-unit"> {habit.unidad}</span>}
+                    </span>
                   </div>
                 )
               ) : (
@@ -602,7 +607,7 @@ function StatsGlobal({ habits, phasesByHabit, recMap, rachas, onHabitClick, toda
                 <button key={habit.id} className="compliance-row" onClick={() => onHabitClick(habit)}>
                   <div className="compliance-top">
                     <span className="compliance-dot" style={{ background: habit.color }} />
-                    <span className="compliance-name">{habit.emoji ? `${habit.emoji} ` : ''}{habit.nombre}</span>
+                    <span className="compliance-name">{habit.nombre}</span>
                     <span className="compliance-pct tnum">{pct}%</span>
                   </div>
                   <div className="compliance-bar-track">
@@ -629,7 +634,7 @@ function StatsGlobal({ habits, phasesByHabit, recMap, rachas, onHabitClick, toda
                     </div>
                   </div>
                   <span className="racha-name">
-                    {habit.emoji ? `${habit.emoji} ` : ''}{habit.nombre}
+                    {habit.nombre}
                     {actual > 0 && actual === record && <span className="racha-active-badge"> · activa</span>}
                   </span>
                 </button>

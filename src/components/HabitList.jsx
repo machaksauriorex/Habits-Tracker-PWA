@@ -59,7 +59,6 @@ export default function HabitList({ onNew, onEdit }) {
             <li key={habit.id} className="habit-item">
               <div className="habit-color-dot" style={{ background: habit.color }} />
               <div className="habit-info">
-                {habit.emoji && <span className="habit-emoji">{habit.emoji}</span>}
                 <span className="habit-name">{habit.nombre}</span>
                 <span className="period-badge">{PERIODO_LABELS[habit.periodo]}</span>
               </div>
@@ -85,7 +84,6 @@ export default function HabitList({ onNew, onEdit }) {
                 <li key={habit.id} className="habit-item habit-item--archived">
                   <div className="habit-color-dot" style={{ background: habit.color, opacity: 0.4 }} />
                   <div className="habit-info">
-                    {habit.emoji && <span className="habit-emoji">{habit.emoji}</span>}
                     <span className="habit-name" style={{ opacity: 0.5 }}>{habit.nombre}</span>
                   </div>
                   <div className="archived-actions">

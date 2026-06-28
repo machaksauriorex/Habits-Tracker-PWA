@@ -1025,15 +1025,52 @@ button { font-family: inherit; }
 }
 
 /* Gráfica de barras */
-.bar-chart {
+.bars {
+  position: relative;
+  padding-top: 14px;
+}
+
+.bars-plot-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 14px;
+  bottom: 18px; /* deja hueco para las etiquetas inferiores */
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bar-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top-width: 1.5px;
+}
+.bar-line-goal { border-top: 1.5px dashed var(--accent); opacity: 0.85; }
+.bar-line-avg  { border-top: 1.5px dotted var(--text-muted); opacity: 0.7; }
+
+.bar-line-tag {
+  position: absolute;
+  right: 0;
+  top: -8px;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--bg);
+  padding: 0 3px;
+}
+
+.bars-row {
   display: flex;
-  gap: 5px;
+  gap: 4px;
   height: 110px;
   align-items: flex-end;
 }
 
 .bar-col {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1045,31 +1082,21 @@ button { font-family: inherit; }
   flex: 1;
   width: 100%;
   background: var(--surface);
-  border-radius: 5px;
+  border-radius: 4px;
   display: flex;
   align-items: flex-end;
-  position: relative;
   overflow: hidden;
 }
 
 .bar-fill {
   width: 100%;
-  border-radius: 5px;
+  border-radius: 4px;
   transition: height 0.3s ease;
 }
 
-.bar-goal-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 1.5px;
-  background: var(--accent);
-  opacity: 0.7;
-  pointer-events: none;
-}
-
 .bar-label {
-  font-size: 10px;
+  font-size: 9px;
+  height: 12px;
   color: var(--text-muted);
   font-weight: 500;
 }
@@ -1078,6 +1105,16 @@ button { font-family: inherit; }
   font-size: 9px;
   color: var(--text-muted);
 }
+
+/* Pastilla de tendencia */
+.trend-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.trend-pill.good { color: #5CC87A; background: rgba(92,200,122,.14); }
+.trend-pill.bad  { color: #EF6A6A; background: rgba(239,68,68,.14); }
 
 /* Lista de fases */
 .phases-list {

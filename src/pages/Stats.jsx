@@ -2,29 +2,43 @@ import { useState, useEffect, useMemo } from 'react'
 import { getHabits, getAllPhases, getAllRecords, getSettings } from '../db/index.js'
 import { calcularHucha, getActivePhase } from '../utils/piggybank.js'
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Helpers de fecha ───────────────────────────────────────────────────────────
 
 function todayStr() {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
 }
+function pad2(n) { return String(n).padStart(2, '0') }
 function addDays(s, n) {
   const d = new Date(s + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().split('T')[0]
+}
+function daysBetween(a, b) {
+  return Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 86400000)
 }
 function getMonday(s) {
   const d = new Date(s + 'T12:00:00'), dow = d.getDay()
   d.setDate(d.getDate() - (dow === 0 ? 6 : dow - 1))
   return d.toISOString().split('T')[0]
 }
+function daysInMonth(y, m) { return new Date(y, m, 0).getDate() } // m: 1-12
+
 function formatNum(n) {
   return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+function fmtN(n, dec = 1) {
+  return Number(n).toLocaleString('es-ES', { maximumFractionDigits: dec })
 }
 function fmtDate(s) {
   return new Date(s + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
 }
+function hexA(hex, a) {
+  const n = parseInt(hex.slice(1), 16)
+  return `rgba(${(n>>16)&255}, ${(n>>8)&255}, ${n&255}, ${a})`
+}
 
 const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
 const DAYS   = ['L','M','X','J','V','S','D']
+const PERIOD_WORD = { daily: 'día', weekly: 'sem', monthly: 'mes' }
 
 function periodRange(sel, today) {
   const d = new Date(today + 'T12:00:00'), y = d.getFullYear(), m = d.getMonth()
@@ -33,15 +47,14 @@ function periodRange(sel, today) {
     return { start: mon, end: addDays(mon, 6), label: 'Esta semana' }
   }
   if (sel === 'month') {
-    const start = `${y}-${String(m+1).padStart(2,'0')}-01`
-    const dim   = new Date(y, m+1, 0).getDate()
-    const end   = `${y}-${String(m+1).padStart(2,'0')}-${String(dim).padStart(2,'0')}`
+    const start = `${y}-${pad2(m+1)}-01`
+    const end   = `${y}-${pad2(m+1)}-${pad2(daysInMonth(y, m+1))}`
     return { start, end, label: `${MONTHS[m]} ${y}` }
   }
   return { start: `${y}-01-01`, end: `${y}-12-31`, label: String(y) }
 }
 
-// Grid[col][row]: row 0=Lun … 6=Dom
+// Grid[col][row]: row 0=Lun … 6=Dom (para heatmaps)
 function buildGrid(start, end) {
   const grid = []
   let cur = getMonday(start)
@@ -56,46 +69,192 @@ function buildGrid(start, end) {
   return grid
 }
 
-function isDone(habit, date, phasesByHabit, recMap) {
-  const val = recMap[`${habit.id}__${date}`]
-  if (val === undefined) return false
+// ── Lógica de cumplimiento (consistente con la hucha) ──────────────────────────
+
+/** ¿Se cumple el objetivo en UN día? (válido para diarios y para booleanos). */
+function dayMet(habit, date, phasesByHabit, recMap) {
+  const v = recMap[`${habit.id}__${date}`]
+  if (v === undefined) return false
   const phase = getActivePhase(phasesByHabit[habit.id] ?? [], date)
-  if (!phase) return !!val
-  if (habit.tipo === 'boolean') return val === true
-  const v = Number(val)
-  return phase.goalType === 'min' ? v >= phase.goalValue : v <= phase.goalValue
+  if (!phase) return !!v
+  if (habit.tipo === 'boolean') return v === true
+  const n = Number(v)
+  return phase.goalType === 'min' ? n >= phase.goalValue : n <= phase.goalValue
 }
 
-function compliance(habit, start, end, today, phasesByHabit, recMap) {
-  const trackStart = phasesByHabit[habit.id]?.[0]?.startDate ?? start
-  let total = 0, done = 0
-  let d = start < trackStart ? trackStart : start
-  while (d <= end && d <= today) {
-    total++
-    if (isDone(habit, d, phasesByHabit, recMap)) done++
+/** Genera los límites {start,end} de cada periodo que toca [from,to] (no diarios). */
+function eachPeriod(habit, from, to) {
+  const out = []
+  if (habit.periodo === 'weekly') {
+    let s = getMonday(from)
+    while (s <= to) { out.push({ start: s, end: addDays(s, 6) }); s = addDays(s, 7) }
+  } else if (habit.periodo === 'monthly') {
+    const d = new Date(from + 'T12:00:00')
+    let y = d.getFullYear(), m = d.getMonth() + 1
+    while (true) {
+      const s = `${y}-${pad2(m)}-01`
+      if (s > to) break
+      out.push({ start: s, end: `${y}-${pad2(m)}-${pad2(daysInMonth(y, m))}` })
+      m++; if (m > 12) { m = 1; y++ }
+    }
+  }
+  return out
+}
+
+/** Evalúa un periodo completo (misma regla que la hucha: el "máximo" exige todos
+ *  los días marcados y no premia hasta el cierre). */
+function periodMet(habit, pStart, pEnd, today, phasesByHabit, recMap) {
+  const phase = getActivePhase(phasesByHabit[habit.id] ?? [], pStart)
+  if (!phase) return null
+  const trackStart = phasesByHabit[habit.id]?.[0]?.startDate ?? pStart
+  let total = 0, faltan = 0, marked = 0
+  let d = pStart
+  while (d <= pEnd) {
+    const v = recMap[`${habit.id}__${d}`]
+    if (v !== undefined) { marked++; total += habit.tipo === 'boolean' ? (v ? 1 : 0) : Number(v) }
+    else if (d >= trackStart && d <= today) faltan++
     d = addDays(d, 1)
   }
-  return total > 0 ? Math.round(done / total * 100) : 0
+  const met = phase.goalType === 'max'
+    ? (faltan === 0 && total <= phase.goalValue)
+    : total >= phase.goalValue
+  return { met, total, marked, abierto: pEnd >= today, goal: phase.goalValue, goalType: phase.goalType }
 }
 
-// ── Heatmap ───────────────────────────────────────────────────────────────────
+/** % de cumplimiento en [start,end]: por día (diarios) o por periodo cerrado. */
+function compliance(habit, start, end, today, phasesByHabit, recMap) {
+  const trackStart = phasesByHabit[habit.id]?.[0]?.startDate ?? start
+  const from  = start < trackStart ? trackStart : start
+  const clamp = end > today ? today : end
+  if (from > clamp) return 0
+
+  if (habit.periodo === 'daily') {
+    let total = 0, done = 0, d = from
+    while (d <= clamp) { total++; if (dayMet(habit, d, phasesByHabit, recMap)) done++; d = addDays(d, 1) }
+    return total ? Math.round(done / total * 100) : 0
+  }
+  let total = 0, done = 0
+  for (const p of eachPeriod(habit, from, clamp)) {
+    const pm = periodMet(habit, p.start, p.end, today, phasesByHabit, recMap)
+    if (!pm || pm.abierto) continue
+    total++; if (pm.met) done++
+  }
+  return total ? Math.round(done / total * 100) : 0
+}
+
+// ── Color del heatmap (intensidad para numéricos) ──────────────────────────────
+
+/** Objetivo "diario equivalente" (prorratea semanal/mensual). */
+function dailyRef(habit, phase, date) {
+  if (!phase) return 0
+  if (habit.periodo === 'weekly')  return phase.goalValue / 7
+  if (habit.periodo === 'monthly') {
+    const d = new Date(date + 'T12:00:00')
+    return phase.goalValue / daysInMonth(d.getFullYear(), d.getMonth() + 1)
+  }
+  return phase.goalValue
+}
+
+function cellColor(habit, date, today, phasesByHabit, recMap) {
+  if (date > today) return 'var(--bg)'
+  const v = recMap[`${habit.id}__${date}`]
+  if (v === undefined) return 'var(--bg)'
+  const phase = getActivePhase(phasesByHabit[habit.id] ?? [], date)
+
+  if (habit.tipo === 'boolean') return v === true ? habit.color : hexA(habit.color, 0.18)
+
+  const n   = Number(v)
+  const ref = dailyRef(habit, phase, date)
+  if (phase?.goalType === 'max') {
+    // menos es mejor: dentro del límite → color del hábito; pasarse → rojo
+    if (ref <= 0 || n <= ref) return hexA(habit.color, 0.45 + 0.55 * (ref > 0 ? 1 - Math.min(n / ref, 1) : 1))
+    return hexA('#EF4444', 0.5 + 0.4 * Math.min((n - ref) / ref, 1))
+  }
+  // mínimo: más es mejor
+  if (ref <= 0) return habit.color
+  return hexA(habit.color, 0.22 + 0.78 * Math.min(n / ref, 1))
+}
+
+// ── Resumen numérico ───────────────────────────────────────────────────────────
+
+function numericSummary(habit, today, phasesByHabit, recMap) {
+  const trackStart = phasesByHabit[habit.id]?.[0]?.startDate
+
+  if (habit.periodo === 'daily') {
+    const win = 30
+    const from = (() => {
+      const w = addDays(today, -(win - 1))
+      return trackStart && trackStart > w ? trackStart : w
+    })()
+    const elapsed = daysBetween(from, today) + 1
+    let sum = 0, marked = 0, best = null, metDays = 0
+    let d = from
+    while (d <= today) {
+      const v = recMap[`${habit.id}__${d}`]
+      if (v !== undefined) {
+        const n = Number(v); marked++; sum += n
+        best = best == null ? n : (habit.tipo === 'quantitative'
+          ? (getActivePhase(phasesByHabit[habit.id] ?? [], d)?.goalType === 'max'
+              ? Math.min(best, n) : Math.max(best, n))
+          : best)
+        if (dayMet(habit, d, phasesByHabit, recMap)) metDays++
+      }
+      d = addDays(d, 1)
+    }
+    // Tendencia: media últimos 15 días vs. 15 anteriores
+    const avgRange = (a, b) => {
+      let s = 0, c = 0, dd = a
+      while (dd <= b) { const v = recMap[`${habit.id}__${dd}`]; if (v !== undefined) { s += Number(v); c++ } dd = addDays(dd, 1) }
+      return c ? s / c : null
+    }
+    const recent = avgRange(addDays(today, -14), today)
+    const prev   = avgRange(addDays(today, -29), addDays(today, -15))
+    return {
+      mode: 'daily', media: sum / elapsed, total: sum, best, metDays, elapsed,
+      goalType: getActivePhase(phasesByHabit[habit.id] ?? [], today)?.goalType ?? 'min',
+      recent, prev,
+    }
+  }
+
+  // No diarios: agregamos por periodo, excluyendo los anteriores al seguimiento
+  const span = habit.periodo === 'weekly' ? 7 * 8 : 32 * 7
+  const periods = eachPeriod(habit, addDays(today, -span), today)
+    .filter(p => !trackStart || p.end >= trackStart)
+    .slice(-6)
+  let sum = 0, metCount = 0, closed = 0
+  const closedTotals = []
+  for (const p of periods) {
+    const pm = periodMet(habit, p.start, p.end, today, phasesByHabit, recMap)
+    if (!pm) continue
+    sum += pm.total
+    if (!pm.abierto) { closed++; closedTotals.push(pm.total); if (pm.met) metCount++ }
+  }
+  // Media y tendencia sobre periodos CERRADOS (el abierto está a medias y falsearía)
+  const media  = closedTotals.length ? closedTotals.reduce((a, b) => a + b, 0) / closedTotals.length : 0
+  const recent = closedTotals.length ? closedTotals[closedTotals.length - 1] : null
+  const prev   = closedTotals.length > 1 ? closedTotals[closedTotals.length - 2] : null
+  return {
+    mode: 'period', media, total: sum, count: periods.length,
+    metCount, closed, goalType: getActivePhase(phasesByHabit[habit.id] ?? [], today)?.goalType ?? 'min',
+    recent, prev,
+  }
+}
+
+// ── Heatmap ────────────────────────────────────────────────────────────────────
 
 function Heatmap({ grid, getColor, today, small }) {
   const sz = small ? 9 : 12
   return (
     <div className="hm-wrap">
       <div className="hm-labels">
-        {DAYS.map(l => <div key={l} className="hm-label">{l}</div>)}
+        {DAYS.map(l => <div key={l} className="hm-label" style={{ height: sz, lineHeight: `${sz}px` }}>{l}</div>)}
       </div>
       <div className="hm-cols" style={{ '--sz': `${sz}px` }}>
         {grid.map((week, ci) => (
           <div key={ci} className="hm-col">
             {week.map(({ date, inP }, ri) => (
-              <div
-                key={ri}
-                className={`hm-cell${date === today ? ' hm-today' : ''}`}
-                style={{ background: inP ? getColor(date) : 'transparent' }}
-              />
+              <div key={ri} className={`hm-cell${date === today ? ' hm-today' : ''}`}
+                style={{ background: inP ? getColor(date) : 'transparent' }} />
             ))}
           </div>
         ))}
@@ -104,46 +263,80 @@ function Heatmap({ grid, getColor, today, small }) {
   )
 }
 
-// ── BarChart (últimos 7 días, solo cuantitativos) ─────────────────────────────
+// ── Gráfica de barras (genérica) ───────────────────────────────────────────────
 
-function BarChart({ habit, phasesByHabit, recMap, today }) {
-  const days  = Array.from({ length: 7 }, (_, i) => addDays(today, i - 6))
-  const vals  = days.map(d => ({ date: d, val: recMap[`${habit.id}__${d}`] ?? null }))
-  const maxV  = Math.max(...vals.map(v => v.val ?? 0), 1)
-  const phase = getActivePhase(phasesByHabit[habit.id] ?? [], today)
-  const goal  = phase?.goalValue ?? 0
-
+function Bars({ data, goal, color, avg, showVals }) {
+  const maxV = Math.max(...data.map(d => d.val ?? 0), goal ?? 0, 1)
   return (
-    <div className="bar-chart">
-      {vals.map(({ date, val }) => {
-        const pct  = val != null ? Math.min((Number(val) / maxV) * 100, 100) : 0
-        const done = val != null && phase &&
-          (phase.goalType === 'min' ? Number(val) >= goal : Number(val) <= goal)
-        const dow  = new Date(date + 'T12:00:00').getDay()
-        return (
-          <div key={date} className="bar-col">
-            <div className="bar-track">
-              {goal > 0 && (
-                <div className="bar-goal-line"
-                  style={{ bottom: `${Math.min((goal/maxV)*100, 100)}%` }} />
-              )}
-              <div className="bar-fill"
-                style={{ height: `${pct}%`, background: done ? habit.color : 'rgba(138,144,156,.35)' }} />
+    <div className="bars">
+      {(goal != null || avg != null) && (
+        <div className="bars-plot-overlay">
+          {goal != null && (
+            <div className="bar-line bar-line-goal" style={{ bottom: `${Math.min(goal / maxV, 1) * 100}%` }}>
+              <span className="bar-line-tag">obj. {fmtN(goal, 0)}</span>
             </div>
-            <div className="bar-label">{DAYS[dow === 0 ? 6 : dow - 1]}</div>
-            {val != null && <div className="bar-val tnum">{val}</div>}
-          </div>
-        )
-      })}
+          )}
+          {avg != null && avg > 0 && (
+            <div className="bar-line bar-line-avg" style={{ bottom: `${Math.min(avg / maxV, 1) * 100}%` }} />
+          )}
+        </div>
+      )}
+      <div className="bars-row">
+        {data.map((d, i) => {
+          const pct = d.val != null ? Math.min((d.val / maxV) * 100, 100) : 0
+          return (
+            <div key={i} className="bar-col">
+              {showVals && d.val != null && <span className="bar-val tnum">{fmtN(d.val, 0)}</span>}
+              <div className="bar-track">
+                <div className="bar-fill" style={{
+                  height: `${pct}%`,
+                  background: d.val == null ? 'transparent' : (d.met ? color : hexA(color, 0.3)),
+                }} />
+              </div>
+              <span className="bar-label">{d.label}</span>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
 
-// ── Pantalla individual de hábito ─────────────────────────────────────────────
+function dailyBars(habit, today, phasesByHabit, recMap, n = 14) {
+  const out = []
+  for (let i = n - 1; i >= 0; i--) {
+    const date = addDays(today, -i)
+    const v = recMap[`${habit.id}__${date}`]
+    const dow = new Date(date + 'T12:00:00').getDay()
+    out.push({
+      label: i % 2 === 0 ? DAYS[dow === 0 ? 6 : dow - 1] : '',
+      val: v !== undefined ? Number(v) : null,
+      met: dayMet(habit, date, phasesByHabit, recMap),
+    })
+  }
+  return out
+}
+
+function periodBars(habit, today, phasesByHabit, recMap, n = 6) {
+  const span = habit.periodo === 'weekly' ? 7 * (n + 1) : 32 * n
+  const trackStart = phasesByHabit[habit.id]?.[0]?.startDate
+  const periods = eachPeriod(habit, addDays(today, -span), today)
+    .filter(p => !trackStart || p.end >= trackStart)
+    .slice(-n)
+  return periods.map(p => {
+    const pm = periodMet(habit, p.start, p.end, today, phasesByHabit, recMap)
+    const label = habit.periodo === 'weekly'
+      ? new Date(p.start + 'T12:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' })
+      : MONTHS[new Date(p.start + 'T12:00:00').getMonth()]
+    return { label, val: pm?.total ?? 0, met: !!pm?.met }
+  })
+}
+
+// ── Pantalla individual ────────────────────────────────────────────────────────
 
 function StatsHabit({ habit, phasesByHabit, recMap, movimientos, rachas, onBack, today }) {
   const sortedPhases = useMemo(() =>
-    [...(phasesByHabit[habit.id] ?? [])].sort((a,b) => a.startDate.localeCompare(b.startDate))
+    [...(phasesByHabit[habit.id] ?? [])].sort((a, b) => a.startDate.localeCompare(b.startDate))
   , [phasesByHabit, habit.id])
 
   const racha      = rachas[habit.id] ?? { actual: 0, record: 0 }
@@ -152,20 +345,24 @@ function StatsHabit({ habit, phasesByHabit, recMap, movimientos, rachas, onBack,
                .reduce((s, m) => s + m.cantidad, 0)
   , [movimientos, habit.id])
 
+  const isNum  = habit.tipo === 'quantitative'
+  const phase  = getActivePhase(sortedPhases, today)
+
   const end12   = addDays(getMonday(today), 6)
   const start12 = addDays(end12, -83) // 12 semanas
   const grid12  = useMemo(() => buildGrid(start12, end12), [start12, end12])
+  const comp12  = useMemo(() => compliance(habit, start12, end12, today, phasesByHabit, recMap),
+    [habit, start12, end12, today, phasesByHabit, recMap])
 
-  const compliance12 = useMemo(() => {
-    const ts = sortedPhases[0]?.startDate
-    let done = 0, total = 0
-    let d = start12
-    while (d <= today && d <= end12) {
-      if (!ts || d >= ts) { total++; if (isDone(habit, d, phasesByHabit, recMap)) done++ }
-      d = addDays(d, 1)
-    }
-    return total > 0 ? Math.round(done / total * 100) : 0
-  }, [habit, phasesByHabit, recMap, today, start12, end12, sortedPhases])
+  const summary = useMemo(() => isNum ? numericSummary(habit, today, phasesByHabit, recMap) : null,
+    [isNum, habit, today, phasesByHabit, recMap])
+
+  const barsData = useMemo(() => {
+    if (!isNum) return null
+    return habit.periodo === 'daily'
+      ? dailyBars(habit, today, phasesByHabit, recMap)
+      : periodBars(habit, today, phasesByHabit, recMap)
+  }, [isNum, habit, today, phasesByHabit, recMap])
 
   const earningsByPhase = useMemo(() => {
     const map = {}
@@ -176,6 +373,16 @@ function StatsHabit({ habit, phasesByHabit, recMap, movimientos, rachas, onBack,
     }
     return map
   }, [movimientos, habit.id, sortedPhases])
+
+  // Tendencia (mejora si min↑ / max↓)
+  const trend = useMemo(() => {
+    if (!summary || summary.recent == null || summary.prev == null || summary.prev === 0) return null
+    const delta = summary.recent - summary.prev
+    if (Math.abs(delta) < 1e-9) return null
+    const pct  = Math.round(delta / summary.prev * 100)
+    const good = summary.goalType === 'max' ? delta < 0 : delta > 0
+    return { pct, good, up: delta > 0 }
+  }, [summary])
 
   return (
     <div className="stats-page">
@@ -194,7 +401,7 @@ function StatsHabit({ habit, phasesByHabit, recMap, movimientos, rachas, onBack,
       </header>
 
       <div className="stats-body">
-        {/* KPIs */}
+        {/* KPIs universales */}
         <div className="kpi-row">
           <div className="kpi-tile">
             <span className="kpi-label">Aportación total</span>
@@ -202,40 +409,91 @@ function StatsHabit({ habit, phasesByHabit, recMap, movimientos, rachas, onBack,
           </div>
           <div className="kpi-tile">
             <span className="kpi-label">Racha actual</span>
-            <span className="kpi-value">{racha.actual}&thinsp;<span className="kpi-unit">días</span></span>
+            <span className="kpi-value tnum">{racha.actual}&thinsp;<span className="kpi-unit">días</span></span>
           </div>
           <div className="kpi-tile">
             <span className="kpi-label">Mejor racha</span>
-            <span className="kpi-value">{racha.record}&thinsp;<span className="kpi-unit">días</span></span>
+            <span className="kpi-value tnum">{racha.record}&thinsp;<span className="kpi-unit">días</span></span>
           </div>
         </div>
+
+        {/* Resumen numérico */}
+        {isNum && summary && (
+          <section>
+            <div className="stats-section-header">
+              <span className="stats-section-title">
+                Resumen · {summary.mode === 'daily' ? 'últimos 30 días' : `últimos ${barsData?.length ?? 6} periodos`}
+              </span>
+              {trend && (
+                <span className={`trend-pill${trend.good ? ' good' : ' bad'}`}>
+                  {trend.up ? '↑' : '↓'} {Math.abs(trend.pct)}%
+                </span>
+              )}
+            </div>
+            <div className="kpi-row">
+              <div className="kpi-tile">
+                <span className="kpi-label">Media</span>
+                <span className="kpi-value tnum">
+                  {fmtN(summary.media)}&thinsp;<span className="kpi-unit">/{PERIOD_WORD[habit.periodo]}</span>
+                </span>
+              </div>
+              <div className="kpi-tile">
+                <span className="kpi-label">Total</span>
+                <span className="kpi-value tnum">{fmtN(summary.total, 0)}</span>
+              </div>
+              {summary.mode === 'daily' ? (
+                summary.goalType === 'max' ? (
+                  <div className="kpi-tile">
+                    <span className="kpi-label">Días en objetivo</span>
+                    <span className="kpi-value tnum">
+                      {summary.metDays}<span className="kpi-unit">/{summary.elapsed}</span>
+                    </span>
+                  </div>
+                ) : (
+                  <div className="kpi-tile">
+                    <span className="kpi-label">Mejor día</span>
+                    <span className="kpi-value tnum">{summary.best != null ? fmtN(summary.best, 0) : '—'}</span>
+                  </div>
+                )
+              ) : (
+                <div className="kpi-tile">
+                  <span className="kpi-label">Periodos cumplidos</span>
+                  <span className="kpi-value tnum">{summary.metCount}<span className="kpi-unit">/{summary.closed}</span></span>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
 
         {/* Heatmap 12 semanas */}
         <section>
           <div className="stats-section-header">
             <span className="stats-section-title">Actividad · Últimas 12 semanas</span>
-            <span className="stats-pct">{compliance12}% cumplimiento</span>
+            <span className="stats-pct">{comp12}% cumplimiento</span>
           </div>
           <Heatmap
             grid={grid12}
-            getColor={date => {
-              if (date > today) return 'var(--bg)'
-              if (isDone(habit, date, phasesByHabit, recMap)) return habit.color
-              if (recMap[`${habit.id}__${date}`] !== undefined) return `${habit.color}44`
-              return 'var(--bg)'
-            }}
+            getColor={date => cellColor(habit, date, today, phasesByHabit, recMap)}
             today={today}
             small
           />
         </section>
 
-        {/* Barra últimos 7 días (cuantitativos) */}
-        {habit.tipo === 'quantitative' && (
+        {/* Gráfica de barras (numéricos) */}
+        {isNum && barsData && barsData.length > 0 && (
           <section>
             <div className="stats-section-header">
-              <span className="stats-section-title">Últimos 7 días</span>
+              <span className="stats-section-title">
+                {habit.periodo === 'daily' ? 'Últimos 14 días' : 'Por periodo'}
+              </span>
             </div>
-            <BarChart habit={habit} phasesByHabit={phasesByHabit} recMap={recMap} today={today} />
+            <Bars
+              data={barsData}
+              goal={phase?.goalValue}
+              avg={habit.periodo === 'daily' && summary ? summary.media : null}
+              color={habit.color}
+              showVals={habit.periodo !== 'daily'}
+            />
           </section>
         )}
 
@@ -276,7 +534,7 @@ function StatsHabit({ habit, phasesByHabit, recMap, movimientos, rachas, onBack,
   )
 }
 
-// ── Pantalla global de estadísticas ──────────────────────────────────────────
+// ── Pantalla global ────────────────────────────────────────────────────────────
 
 function StatsGlobal({ habits, phasesByHabit, recMap, rachas, onHabitClick, today }) {
   const [period, setPeriod] = useState('month')
@@ -291,7 +549,7 @@ function StatsGlobal({ habits, phasesByHabit, recMap, rachas, onHabitClick, toda
       h.periodo === 'daily' && (phasesByHabit[h.id]?.[0]?.startDate ?? '9999') <= date
     )
     if (!eligible.length) return 'var(--surface)'
-    const done = eligible.filter(h => isDone(h, date, phasesByHabit, recMap)).length
+    const done = eligible.filter(h => dayMet(h, date, phasesByHabit, recMap)).length
     const rate = done / eligible.length
     if (rate === 0) return 'var(--bg)'
     return `rgba(233,196,106,${(0.15 + rate * 0.85).toFixed(2)})`
@@ -325,7 +583,6 @@ function StatsGlobal({ habits, phasesByHabit, recMap, rachas, onHabitClick, toda
       </header>
 
       <div className="stats-body">
-        {/* Heatmap actividad */}
         <section>
           <div className="stats-section-header">
             <span className="stats-section-title">Actividad diaria · {label}</span>
@@ -333,7 +590,6 @@ function StatsGlobal({ habits, phasesByHabit, recMap, rachas, onHabitClick, toda
           <Heatmap grid={grid} getColor={getGlobalColor} today={today} small={isYear} />
         </section>
 
-        {/* Cumplimiento */}
         {complianceList.length > 0 && (
           <section>
             <div className="stats-section-header">
@@ -346,9 +602,7 @@ function StatsGlobal({ habits, phasesByHabit, recMap, rachas, onHabitClick, toda
                 <button key={habit.id} className="compliance-row" onClick={() => onHabitClick(habit)}>
                   <div className="compliance-top">
                     <span className="compliance-dot" style={{ background: habit.color }} />
-                    <span className="compliance-name">
-                      {habit.emoji ? `${habit.emoji} ` : ''}{habit.nombre}
-                    </span>
+                    <span className="compliance-name">{habit.emoji ? `${habit.emoji} ` : ''}{habit.nombre}</span>
                     <span className="compliance-pct tnum">{pct}%</span>
                   </div>
                   <div className="compliance-bar-track">
@@ -360,7 +614,6 @@ function StatsGlobal({ habits, phasesByHabit, recMap, rachas, onHabitClick, toda
           </section>
         )}
 
-        {/* Mejores rachas */}
         {topRachas.length > 0 && (
           <section>
             <div className="stats-section-header">
@@ -386,16 +639,14 @@ function StatsGlobal({ habits, phasesByHabit, recMap, rachas, onHabitClick, toda
         )}
 
         {habits.length === 0 && (
-          <div className="empty-state">
-            <p>Aún no hay hábitos para mostrar.</p>
-          </div>
+          <div className="empty-state"><p>Aún no hay hábitos para mostrar.</p></div>
         )}
       </div>
     </div>
   )
 }
 
-// ── Stats (entrada) ───────────────────────────────────────────────────────────
+// ── Entrada ────────────────────────────────────────────────────────────────────
 
 export default function Stats() {
   const [habits,   setHabits]   = useState([])

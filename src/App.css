@@ -389,15 +389,7 @@ button { font-family: inherit; }
   color: var(--text);
 }
 
-.habit-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
+/* Lista de hábitos en Ajustes (embebida): la separación la fija .habits-embedded */
 .habit-item {
   display: flex;
   align-items: center;

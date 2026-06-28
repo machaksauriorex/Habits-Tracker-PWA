@@ -1164,55 +1164,32 @@ button { font-family: inherit; }
 }
 .pig-month { font-size: 12px; color: var(--text-muted); }
 
-/* Hero a casi pantalla completa: el blob grande, los datos quedan debajo */
-.pig-hero {
-  min-height: 76vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 10px 0 14px;
-}
-
-/* Escenario cuadrado del blob (la capa de burbujas y el overlay encajan en él) */
+/* Blob */
 .blob-stage {
   position: relative;
-  width: min(88vw, 360px);
-  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  padding: 22px 0 8px;
 }
 .blob-glow {
   position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(233,196,106,0.18) 0%, transparent 62%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Capa de burbujas metaball (gooey) */
-.pig-meta {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  z-index: 1;
-}
-
-/* La hucha (blob dorado) centrada */
-.blob {
-  position: absolute;
-  top: 50%;
+  top: 0;
   left: 50%;
-  width: 64%;
-  height: 64%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
+  width: 300px;
+  height: 240px;
+  background: radial-gradient(ellipse at 50% 55%, rgba(233,196,106,0.14) 0%, transparent 68%);
+  pointer-events: none;
+}
+.blob {
+  position: relative;
+  width: 200px;
+  height: 200px;
   overflow: hidden;
   background: #1C1F2A;
   box-shadow: 0 18px 56px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
   border-radius: 42% 58% 56% 44% / 48% 42% 58% 52%;
   animation: blobMorph 9s ease-in-out infinite;
-  z-index: 2;
 }
 .blob-fill {
   position: absolute;
@@ -1231,64 +1208,35 @@ button { font-family: inherit; }
   fill: rgba(233,196,106,0.85);
   animation: waveShift 4s linear infinite;
 }
-
-/* Saldo centrado, por encima del blob y las burbujas */
-.blob-num {
+.blob-content {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 4;
-  pointer-events: none;
 }
 .blob-amount {
-  font-size: 38px;
+  font-size: 32px;
   font-weight: 700;
   letter-spacing: -1.5px;
   color: #fff;
   text-shadow: 0 2px 18px rgba(0,0,0,0.7);
 }
 .blob-delta {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: rgba(233,196,106,0.95);
-  margin-top: 7px;
+  margin-top: 6px;
   text-shadow: 0 1px 8px rgba(0,0,0,0.5);
 }
-
-/* Importe dentro de cada burbuja */
-.bubble-amt {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  z-index: 4;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.3px;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.55);
-  pointer-events: none;
-  white-space: nowrap;
-}
-
 .blob-caption {
   text-align: center;
   font-size: 12px;
   color: var(--text-muted);
-  margin: 0;
+  margin: 0 0 8px;
 }
 .blob-caption .tnum { color: var(--accent); font-weight: 600; }
-
-.scroll-hint {
-  font-size: 11px;
-  color: var(--text-muted);
-  opacity: 0.7;
-  animation: hintBob 1.8s ease-in-out infinite;
-}
-@keyframes hintBob {
-  0%, 100% { transform: translateY(0); opacity: 0.5; }
-  50%      { transform: translateY(3px); opacity: 0.85; }
-}
 
 @keyframes blobMorph {
   0%, 100% { border-radius: 42% 58% 56% 44% / 48% 42% 58% 52%; }
@@ -1299,9 +1247,6 @@ button { font-family: inherit; }
   from { transform: translateX(0); }
   to   { transform: translateX(-200px); }
 }
-@keyframes floatA { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(4px, -6px); } }
-@keyframes floatB { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-5px, 5px); } }
-@keyframes floatC { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(5px, 3px); } }
 
 /* Secciones de la hucha */
 .pig-section { padding: 16px var(--space-4) 0; }

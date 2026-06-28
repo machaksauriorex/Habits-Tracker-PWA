@@ -250,11 +250,11 @@ function Heatmap({ grid, getColor, today, small }) {
   // celda, así el heatmap ocupa el 100% aunque las celdas no sean cuadradas.
   const h = small ? 11 : 15
   return (
-    <div className="hm-wrap">
+    <div className="hm-wrap" style={{ '--hm-h': `${h}px` }}>
       <div className="hm-labels">
-        {DAYS.map(l => <div key={l} className="hm-label" style={{ height: h, lineHeight: `${h}px` }}>{l}</div>)}
+        {DAYS.map(l => <div key={l} className="hm-label">{l}</div>)}
       </div>
-      <div className="hm-cols" style={{ '--hm-h': `${h}px` }}>
+      <div className="hm-cols">
         {grid.map((week, ci) => (
           <div key={ci} className="hm-col">
             {week.map(({ date, inP }, ri) => (

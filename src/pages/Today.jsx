@@ -69,7 +69,7 @@ function Check({ ink }) {
 function NumberModal({ habit, date, current, onSave, onCancel }) {
   const [val, setVal] = useState(current != null ? String(current) : '')
   return (
-    <div className="confirm-overlay" onClick={onCancel}>
+    <div className="confirm-overlay is-input" onClick={onCancel}>
       <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
         <h3>{habit.nombre}</h3>
         <p style={{ color: 'var(--text-muted)', margin: '0 0 16px', fontSize: 13 }}>
@@ -81,6 +81,9 @@ function NumberModal({ habit, date, current, onSave, onCancel }) {
           min={0}
           step={1}
           autoFocus
+          inputMode="numeric"
+          autoComplete="off"
+          name="habit-value"
           onChange={e => setVal(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && onSave(val)}
           style={{

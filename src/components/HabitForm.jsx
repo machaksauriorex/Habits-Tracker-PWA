@@ -225,6 +225,7 @@ export default function HabitForm({ habit, onSave, onBack }) {
               id="unidad"
               type="text"
               value={form.unidad}
+              autoComplete="off"
               onChange={e => setField('unidad', e.target.value)}
               placeholder="Ej: páginas, cigarros, vasos"
               maxLength={20}
@@ -291,6 +292,9 @@ export default function HabitForm({ habit, onSave, onBack }) {
                       value={phase.goalValue}
                       min={0}
                       step={1}
+                      inputMode="numeric"
+                      autoComplete="off"
+                      name="goal-value"
                       onChange={e => updatePhaseField(phase._key, 'goalValue', e.target.value)}
                       className="number-input"
                       placeholder="0"

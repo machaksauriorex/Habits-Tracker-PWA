@@ -20,13 +20,14 @@ function proyeccion(base, r, dias, habitos) {
 function EditModal({ title, hint, value, suffix, step, onSave, onCancel }) {
   const [val, setVal] = useState(String(value))
   return (
-    <div className="confirm-overlay" onClick={onCancel}>
+    <div className="confirm-overlay is-input" onClick={onCancel}>
       <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
         <h3>{title}</h3>
         <p>{hint}</p>
         <div className="edit-field">
           <input
             type="number" value={val} min={0} step={step} autoFocus
+            inputMode="decimal" autoComplete="off" name="setting-value"
             onChange={e => setVal(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && onSave(val)}
           />

@@ -782,12 +782,13 @@ button { font-family: inherit; }
 }
 
 .hm-label {
-  height: var(--sz, 12px);
+  height: var(--hm-h, 14px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   font-size: 9px;
   color: var(--text-muted);
-  line-height: var(--sz, 12px);
   width: 10px;
-  text-align: right;
 }
 
 .hm-cols {
@@ -813,8 +814,8 @@ button { font-family: inherit; }
 }
 
 .hm-today {
-  outline: 1.5px solid var(--accent);
-  outline-offset: 1px;
+  /* borde hacia ADENTRO (box-shadow inset) para no comerse el hueco entre celdas */
+  box-shadow: inset 0 0 0 1.5px rgba(236, 238, 242, 0.92);
 }
 
 /* Cumplimiento */
@@ -1482,6 +1483,23 @@ button { font-family: inherit; }
 @keyframes sheetIn {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
+}
+
+/* Diálogos con campo de texto: centrados (que el teclado no tape los botones) */
+.confirm-overlay.is-input {
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.confirm-overlay.is-input .confirm-dialog {
+  border-radius: var(--radius-xl);
+  max-width: 360px;
+  padding-bottom: 24px;
+  animation: dialogPop 0.24s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes dialogPop {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 /* Respeta la preferencia del sistema de reducir el movimiento */

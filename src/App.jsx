@@ -23,10 +23,12 @@ export default function App() {
   return (
     <div className="app-shell">
       <div className="app-content">
-        {tab === 'today'     && <Today onNew={openCreate} />}
-        {tab === 'stats'     && <Stats />}
-        {tab === 'piggybank' && <Piggybank />}
-        {tab === 'settings'  && <Settings onNew={openCreate} onEdit={openEdit} />}
+        <div className="page-fade" key={tab}>
+          {tab === 'today'     && <Today onNew={openCreate} />}
+          {tab === 'stats'     && <Stats />}
+          {tab === 'piggybank' && <Piggybank />}
+          {tab === 'settings'  && <Settings onNew={openCreate} onEdit={openEdit} />}
+        </div>
       </div>
       <BottomNav current={tab} onChange={setTab} />
     </div>

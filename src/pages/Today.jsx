@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { getHabits, getAllPhases, getAllRecords, getSettings, upsertRecord, deleteRecord } from '../db/index.js'
 import { calcularHucha, getActivePhase, getPeriodInfo } from '../utils/piggybank.js'
 import { PERIODO_LABELS } from '../utils/constants.js'
+import { useCountUp } from '../hooks/useCountUp.js'
 
 // ── Helpers de fecha ─────────────────────────────────────────────────────────
 
@@ -159,6 +160,7 @@ export default function Today({ onNew }) {
     return calcularHucha({ habitos: allHabits, fases: phases, registros, ajustes: settings, hoy })
   }, [allHabits, phases, registros, settings, hoy])
   const saldo = hucha.saldo
+  const saldoAnim = useCountUp(saldo)
 
   // Aportación de HOY: cuánto suma la hucha gracias a lo marcado hoy
   const deltaHoy = useMemo(() => {
@@ -274,7 +276,7 @@ export default function Today({ onNew }) {
       <header className="today-header">
         <p className="saldo-label">Saldo acumulado</p>
         <div className="saldo-amount">
-          <span className="saldo-num tnum">{formatNum(saldo)}</span>
+          <span className="saldo-num tnum">{formatNum(saldoAnim)}</span>
           <span className="saldo-cur">€</span>
         </div>
         {(() => {

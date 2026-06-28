@@ -1444,3 +1444,51 @@ button { font-family: inherit; }
   z-index: 60;
   border: 1px solid var(--hairline);
 }
+
+/* ─── Fase 6: Animaciones y pulido ───────────────────────────────────────── */
+
+/* Transición al cambiar de pestaña (el wrapper se remonta con key={tab}) */
+.page-fade { animation: pageIn 0.3s cubic-bezier(.22,.61,.36,1) both; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Toast: entrada desde abajo */
+.settings-toast { animation: toastIn 0.26s cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Entrada escalonada de las tarjetas de hábito (pestaña Hoy) */
+.habit-card { animation: cardIn 0.34s cubic-bezier(.22,.61,.36,1) both; }
+.habit-card:nth-child(1) { animation-delay: 0.02s; }
+.habit-card:nth-child(2) { animation-delay: 0.06s; }
+.habit-card:nth-child(3) { animation-delay: 0.10s; }
+.habit-card:nth-child(4) { animation-delay: 0.14s; }
+.habit-card:nth-child(5) { animation-delay: 0.18s; }
+.habit-card:nth-child(6) { animation-delay: 0.22s; }
+.habit-card:nth-child(n+7) { animation-delay: 0.26s; }
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Diálogos/hojas inferiores: deslizan al aparecer */
+.confirm-overlay { animation: overlayIn 0.18s ease both; }
+.confirm-dialog  { animation: sheetIn 0.28s cubic-bezier(.22,.61,.36,1) both; }
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheetIn {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* Respeta la preferencia del sistema de reducir el movimiento */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

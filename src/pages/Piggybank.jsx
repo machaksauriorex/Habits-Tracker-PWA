@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { getHabits, getAllPhases, getAllRecords, getSettings } from '../db/index.js'
 import { calcularHucha } from '../utils/piggybank.js'
+import { useCountUp } from '../hooks/useCountUp.js'
 
 function todayStr() {
   const d = new Date()
@@ -74,6 +75,7 @@ export default function Piggybank() {
   , [hucha.movimientos, hoy])
 
   const saldo = hucha.saldo
+  const saldoAnim = useCountUp(saldo)
   // Nivel del blob: progreso hacia el siguiente múltiplo de 10 €
   const nextMilestone = (Math.floor(saldo / 10) + 1) * 10
   const fill = Math.max(0.04, (saldo - (nextMilestone - 10)) / 10) // mínimo visible
@@ -97,7 +99,7 @@ export default function Piggybank() {
             </svg>
           </div>
           <div className="blob-content">
-            <span className="blob-amount tnum">{formatNum(saldo)} €</span>
+            <span className="blob-amount tnum">{formatNum(saldoAnim)} €</span>
             {deltaHoy > 0.0001 && <span className="blob-delta tnum">↑ +{formatNum(deltaHoy)} € hoy</span>}
           </div>
         </div>

@@ -704,3 +704,424 @@ button { font-family: inherit; }
   line-height: 1.55;
 }
 .confirm-actions { display: flex; gap: 8px; }
+
+/* ─── Estadísticas ────────────────────────────────────────────────────────── */
+
+.stats-page {
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5) var(--space-3);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.stats-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+.stats-body {
+  padding: var(--space-5) var(--space-4) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.stats-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.stats-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.stats-pct {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Selector de periodo */
+.period-tabs {
+  display: flex;
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 2px;
+}
+
+.period-tab {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.period-tab.active {
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* Heatmap */
+.hm-wrap {
+  display: flex;
+  gap: 5px;
+  overflow: hidden;
+}
+
+.hm-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.hm-label {
+  height: var(--sz, 12px);
+  font-size: 9px;
+  color: var(--text-muted);
+  line-height: var(--sz, 12px);
+  width: 10px;
+  text-align: right;
+}
+
+.hm-cols {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  flex: 1;
+  scrollbar-width: none;
+}
+.hm-cols::-webkit-scrollbar { display: none; }
+
+.hm-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.hm-cell {
+  width: var(--sz, 12px);
+  height: var(--sz, 12px);
+  border-radius: 3px;
+  background: var(--bg);
+}
+
+.hm-today {
+  outline: 1.5px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Cumplimiento */
+.compliance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.compliance-row {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.compliance-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.compliance-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.compliance-name {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compliance-pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.compliance-bar-track {
+  height: 4px;
+  background: var(--surface-2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.compliance-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s cubic-bezier(.25,.8,.25,1);
+}
+
+/* Mejores rachas */
+.rachas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.racha-row {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.racha-bar-track {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  height: 36px;
+  overflow: hidden;
+}
+
+.racha-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  min-width: 44px;
+  transition: width 0.4s cubic-bezier(.25,.8,.25,1);
+}
+
+.racha-bar-num {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.racha-name {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding-left: 2px;
+}
+
+.racha-active-badge {
+  color: var(--accent);
+}
+
+/* KPI tiles (pantalla individual) */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.kpi-tile {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.kpi-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.kpi-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.kpi-unit {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* Cabecera hábito individual */
+.stats-habit-header {
+  padding: 12px var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.stats-back {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  margin-bottom: 8px;
+}
+
+.stats-habit-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stats-habit-bar {
+  width: 4px;
+  height: 28px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.stats-habit-title h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+/* Gráfica de barras */
+.bar-chart {
+  display: flex;
+  gap: 5px;
+  height: 110px;
+  align-items: flex-end;
+}
+
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  height: 100%;
+}
+
+.bar-track {
+  flex: 1;
+  width: 100%;
+  background: var(--surface);
+  border-radius: 5px;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  overflow: hidden;
+}
+
+.bar-fill {
+  width: 100%;
+  border-radius: 5px;
+  transition: height 0.3s ease;
+}
+
+.bar-goal-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: var(--accent);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.bar-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.bar-val {
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+/* Lista de fases */
+.phases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.phase-stat-row {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.phase-stat-row.phase-active {
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+}
+
+.phase-stat-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.phase-stat-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.phase-stat-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.phase-stat-earned {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+}

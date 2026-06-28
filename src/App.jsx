@@ -3,6 +3,7 @@ import BottomNav from './components/BottomNav.jsx'
 import Today from './pages/Today.jsx'
 import HabitList from './components/HabitList.jsx'
 import HabitForm from './components/HabitForm.jsx'
+import Stats from './pages/Stats.jsx'
 import './App.css'
 
 export default function App() {
@@ -22,7 +23,7 @@ export default function App() {
     <div className="app-shell">
       <div className="app-content">
         {tab === 'today'     && <Today onNew={openCreate} />}
-        {tab === 'stats'     && <PlaceholderPage title="Estadísticas" emoji="📊" fase="4" />}
+        {tab === 'stats'     && <Stats />}
         {tab === 'piggybank' && <PlaceholderPage title="Hucha" emoji="🐷" fase="2+" />}
         {tab === 'settings'  && (
           <HabitList onNew={openCreate} onEdit={openEdit} />

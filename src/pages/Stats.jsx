@@ -144,6 +144,9 @@ function compliance(habit, start, end, today, phasesByHabit, recMap) {
 
 // ── Color del heatmap (intensidad para numéricos) ──────────────────────────────
 
+// Pista tenue (visible sobre el fondo) para celdas vacías, futuras o sin actividad.
+const HM_EMPTY = 'rgba(255,255,255,0.05)'
+
 /** Objetivo "diario equivalente" (prorratea semanal/mensual). */
 function dailyRef(habit, phase, date) {
   if (!phase) return 0
@@ -156,9 +159,9 @@ function dailyRef(habit, phase, date) {
 }
 
 function cellColor(habit, date, today, phasesByHabit, recMap) {
-  if (date > today) return 'var(--bg)'
+  if (date > today) return HM_EMPTY
   const v = recMap[`${habit.id}__${date}`]
-  if (v === undefined) return 'var(--bg)'
+  if (v === undefined) return HM_EMPTY
   const phase = getActivePhase(phasesByHabit[habit.id] ?? [], date)
 
   if (habit.tipo === 'boolean') return v === true ? habit.color : hexA(habit.color, 0.18)
@@ -555,14 +558,14 @@ function StatsGlobal({ habits, phasesByHabit, recMap, rachas, onHabitClick, toda
   const isYear  = period === 'year'
 
   const getGlobalColor = (date) => {
-    if (date > today) return 'var(--bg)'
+    if (date > today) return HM_EMPTY
     const eligible = habits.filter(h =>
       h.periodo === 'daily' && (phasesByHabit[h.id]?.[0]?.startDate ?? '9999') <= date
     )
-    if (!eligible.length) return 'var(--surface)'
+    if (!eligible.length) return HM_EMPTY
     const done = eligible.filter(h => dayMet(h, date, phasesByHabit, recMap)).length
     const rate = done / eligible.length
-    if (rate === 0) return 'var(--bg)'
+    if (rate === 0) return HM_EMPTY
     return `rgba(233,196,106,${(0.15 + rate * 0.85).toFixed(2)})`
   }
 

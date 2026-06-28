@@ -74,6 +74,26 @@ export default function Piggybank() {
       .reduce((s, m) => s + m.cantidad, 0)
   , [hucha.movimientos, hoy])
 
+  // Burbujas (metaballs) por hábito: solo el importe. Más aportación → más
+  // grande y más atraída hacia el centro (se funde con la hucha).
+  const bubbles = useMemo(() => {
+    const top = porHabito.slice(0, 5)
+    if (!top.length) return []
+    const maxC = top[0].total || 1
+    const slots = [315, 135, 45, 225, 90] // grados alrededor del blob (0=este, horario)
+    return top.map((item, i) => {
+      const shareN = item.total / maxC          // 0..1 respecto al mayor
+      const a = (slots[i % slots.length] * Math.PI) / 180
+      const dd = 140 - shareN * 34              // más aportación → más cerca del centro
+      const R = 16 + shareN * 16                // y más grande
+      return {
+        id: item.habit.id, color: item.habit.color, total: item.total,
+        cx: 150 + dd * Math.cos(a), cy: 150 + dd * Math.sin(a), R,
+        anim: ['floatA', 'floatB', 'floatC'][i % 3], dur: 6 + i * 0.7,
+      }
+    })
+  }, [porHabito])
+
   const saldo = hucha.saldo
   const saldoAnim = useCountUp(saldo)
   // Nivel del blob: progreso hacia el siguiente múltiplo de 10 €
@@ -89,26 +109,65 @@ export default function Piggybank() {
         <span className="pig-month">{new Date(hoy + 'T12:00:00').toLocaleDateString('es-ES', { month: 'short', year: 'numeric' })}</span>
       </header>
 
-      {/* Blob orgánico con el saldo */}
-      <div className="blob-stage">
-        <div className="blob-glow" />
-        <div className="blob">
-          <div className="blob-fill" style={{ height: `${Math.min(fill, 1) * 100}%` }}>
-            <svg className="blob-wave" viewBox="0 0 400 24" preserveAspectRatio="none">
-              <path d="M0,12 C25,4 50,20 75,12 C100,4 125,20 150,12 C175,4 200,20 200,12 C225,4 250,20 275,12 C300,4 325,20 350,12 C375,4 400,12 400,12 L400,24 L0,24 Z" />
-            </svg>
+      {/* Hero: blob a casi pantalla completa con burbujas por hábito */}
+      <div className="pig-hero">
+        <div className="blob-stage">
+          <div className="blob-glow" />
+
+          {/* Burbujas metaball (se funden hacia el centro) */}
+          <svg className="pig-meta" viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b" />
+                <feColorMatrix in="b" type="matrix"
+                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8" />
+              </filter>
+            </defs>
+            {bubbles.map(b => {
+              const ix1 = b.cx + (150 - b.cx) * 0.40, iy1 = b.cy + (150 - b.cy) * 0.40
+              const ix2 = b.cx + (150 - b.cx) * 0.66, iy2 = b.cy + (150 - b.cy) * 0.66
+              return (
+                <g key={b.id} filter="url(#goo)"
+                  style={{ animation: `${b.anim} ${b.dur}s ease-in-out infinite`, transformOrigin: 'center' }}>
+                  <circle cx={b.cx} cy={b.cy} r={b.R} fill={b.color} />
+                  <circle cx={ix1} cy={iy1} r={b.R * 0.6} fill={b.color} />
+                  <circle cx={ix2} cy={iy2} r={b.R * 0.4} fill={b.color} />
+                </g>
+              )
+            })}
+          </svg>
+
+          {/* La hucha (blob dorado) */}
+          <div className="blob">
+            <div className="blob-fill" style={{ height: `${Math.min(fill, 1) * 100}%` }}>
+              <svg className="blob-wave" viewBox="0 0 400 24" preserveAspectRatio="none">
+                <path d="M0,12 C25,4 50,20 75,12 C100,4 125,20 150,12 C175,4 200,20 200,12 C225,4 250,20 275,12 C300,4 325,20 350,12 C375,4 400,12 400,12 L400,24 L0,24 Z" />
+              </svg>
+            </div>
           </div>
-          <div className="blob-content">
+
+          {/* Saldo (encima de todo) */}
+          <div className="blob-num">
             <span className="blob-amount tnum">{formatNum(saldoAnim)} €</span>
             {deltaHoy > 0.0001 && <span className="blob-delta tnum">↑ +{formatNum(deltaHoy)} € hoy</span>}
           </div>
+
+          {/* Importe de cada burbuja */}
+          {bubbles.map(b => (
+            <span key={b.id} className="bubble-amt tnum"
+              style={{ left: `${b.cx / 3}%`, top: `${b.cy / 3}%`, fontSize: `${11 + b.R * 0.16}px` }}>
+              {formatNum(b.total)} €
+            </span>
+          ))}
         </div>
+
+        <p className="blob-caption">
+          {saldo > 0
+            ? <>faltan <span className="tnum">{formatNum(nextMilestone - saldo)} €</span> para los {nextMilestone} €</>
+            : 'Cumple un hábito y la hucha empieza a llenarse'}
+        </p>
+        <div className="scroll-hint">desliza para ver el detalle ↓</div>
       </div>
-      <p className="blob-caption">
-        {saldo > 0
-          ? <>faltan <span className="tnum">{formatNum(nextMilestone - saldo)} €</span> para los {nextMilestone} €</>
-          : 'Cumple un hábito y la hucha empieza a llenarse'}
-      </p>
 
       {/* Aportación por hábito */}
       {porHabito.length > 0 && (

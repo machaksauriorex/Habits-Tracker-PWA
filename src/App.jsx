@@ -21,7 +21,7 @@ export default function App() {
   return (
     <div className="app-shell">
       <div className="app-content">
-        {tab === 'today'     && <Today />}
+        {tab === 'today'     && <Today onNew={openCreate} />}
         {tab === 'stats'     && <PlaceholderPage title="Estadísticas" emoji="📊" fase="4" />}
         {tab === 'piggybank' && <PlaceholderPage title="Hucha" emoji="🐷" fase="2+" />}
         {tab === 'settings'  && (

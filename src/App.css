@@ -19,11 +19,10 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 64px;
   background: var(--surface);
   border-top: 1px solid var(--hairline);
   display: flex;
-  padding-bottom: env(safe-area-inset-bottom);
+  padding: 12px 0 calc(10px + env(safe-area-inset-bottom));
   z-index: 50;
 }
 
@@ -32,212 +31,257 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2px;
+  gap: 4px;
   border: none;
   background: transparent;
   cursor: pointer;
-  padding: 8px 4px;
+  padding: 0 4px;
+  color: var(--text-muted);
 }
 
-.bottom-nav-icon { font-size: 20px; }
+.bottom-nav-item.active { color: var(--accent); }
+
+.bottom-nav-icon { display: block; }
 
 .bottom-nav-label {
   font-size: 10px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: currentColor;
 }
 
-.bottom-nav-item.active .bottom-nav-label {
-  color: var(--accent);
-  font-weight: 700;
-}
+.bottom-nav-item.active .bottom-nav-label { font-weight: 700; }
 
 /* ─── Pantalla Hoy ────────────────────────────────────────────────────── */
 
 .today-page {
-  max-width: 480px;
+  max-width: 440px;
   margin: 0 auto;
 }
 
 .today-header {
-  position: relative;
-  padding: var(--space-6) var(--space-4) var(--space-5);
+  padding: var(--space-4) var(--space-5) var(--space-3);
   border-bottom: 1px solid var(--hairline);
-  text-align: center;
-  overflow: hidden;
-}
-
-/* Halo de "luz líquida" detrás de la cifra: el saldo como héroe visual */
-.today-header::before {
-  content: '';
-  position: absolute;
-  top: -45%;
-  left: 50%;
-  width: 320px;
-  height: 320px;
-  transform: translateX(-50%);
-  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
-  pointer-events: none;
 }
 
 .saldo-label {
-  position: relative;
-  margin: 0 0 var(--space-2);
-  font-size: 11px;
+  margin: 0 0 var(--space-1);
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
-.saldo-valor {
-  position: relative;
-  margin: 0;
+.saldo-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  line-height: 1;
+}
+
+.saldo-num {
   font-family: var(--font-display);
   font-size: 52px;
-  font-weight: 600;
-  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -3px;
+  color: var(--text);
+}
+
+.saldo-cur {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -1px;
   color: var(--accent);
-  letter-spacing: -1.5px;
-  font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 28px rgba(233, 196, 106, 0.35);
 }
 
-.week-nav {
+.saldo-sub {
+  margin-top: 10px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--hairline);
+  gap: 6px 10px;
 }
 
-.week-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-muted);
-}
+.saldo-delta { font-size: 13px; font-weight: 600; color: #5CC87A; }
+.saldo-week  { font-size: 13px; color: #5CC87A; }
+.saldo-racha { font-size: 13px; color: var(--text-muted); }
+.saldo-dot   { width: 1px; height: 12px; background: var(--hairline); }
 
 /* Cuadrícula de días */
 
 .grid-header {
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  border-bottom: 1px solid var(--hairline);
+  padding: 10px 28px 8px 14px;
 }
 
-.habit-label-col {
-  flex: 0 0 140px;
-  min-width: 0;
+.week-stepper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.week-arrow {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.week-arrow:disabled { opacity: 0.3; cursor: default; }
+.week-arrow:not(:disabled):active { background: var(--surface-2); }
+
+.week-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.day-track {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .day-col-header {
-  flex: 1;
+  width: 30px;
   text-align: center;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 500;
   color: var(--text-muted);
-  padding: 6px 0;
 }
 
 .day-col-header.today {
   color: var(--accent);
+  font-weight: 700;
 }
 
-/* Filas de hábitos */
+/* Lista de hábitos — cada uno en su tarjeta */
 
-.habit-rows {
+.habit-list {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.habit-row {
+.habit-card {
+  display: flex;
+  align-items: stretch;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  padding-right: 14px;
+}
+
+.habit-bar {
+  width: 4px;
+  flex: none;
+  align-self: stretch;
+}
+
+.habit-label-col {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
-  padding: 6px 12px;
-  border-bottom: 1px solid var(--hairline);
-  gap: 4px;
-  min-height: 52px;
-}
-
-.habit-row-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-right: 6px;
+  padding: 12px 8px 12px 14px;
 }
 
 .habit-row-text {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   min-width: 0;
 }
 
 .habit-row-name {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.period-progress {
-  font-size: 10px;
+.habit-row-sub {
+  font-size: 11px;
   color: var(--text-muted);
-  font-weight: 500;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Celdas de día */
 
 .day-cell {
-  flex: 1;
-  aspect-ratio: 1;
-  max-width: 40px;
-  border-radius: var(--radius-sm);
-  border: 1.5px solid var(--hairline);
-  background: transparent;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  padding: 0;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  background: var(--bg);
   color: var(--text);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
-  transition: background 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.16s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.14s ease, border-color 0.14s ease;
 }
 
-.day-cell.done {
-  color: #14161a;
-}
-
-.day-cell.today {
-  border-width: 2px;
-}
-
-.day-cell.inactive {
-  opacity: 0.2;
-  cursor: default;
-}
+/* Variantes (los colores de done/partial llegan por estilo inline con el color del hábito) */
+.day-cell.empty  { background: var(--bg); border-color: var(--hairline); }
+.day-cell.future { background: var(--bg); opacity: 0.35; cursor: default; }
+.day-cell.today  { border-width: 1.5px; border-color: var(--hairline); }
 
 /* Hábito de "máximo" con un día sin marcar: hay que poner 0 (invalida la racha) */
 .day-cell.missing {
+  background: var(--bg);
   border-style: dashed;
-  border-color: #f59e0b;
-  color: #f59e0b;
-  font-size: 10px;
-  font-weight: 700;
+  border-color: var(--warn);
+  color: var(--warn);
+  font-size: 9px;
 }
 
-.day-cell:not(.inactive):active {
-  opacity: 0.7;
+.day-cell:not(.future):active { transform: scale(0.88); }
+
+/* Semana de un hábito de "máximo" superada → borde rojo a toda la semana */
+.day-track.failed {
+  outline: 1.5px solid rgba(239, 68, 68, 0.6);
+  outline-offset: 4px;
+  border-radius: 6px;
 }
+
+/* ─── Botón flotante (nuevo hábito) ───────────────────────────────────────── */
+
+.fab {
+  position: fixed;
+  right: 22px;
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(233, 196, 106, 0.5);
+  z-index: 40;
+  transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.fab:active { transform: scale(0.92); }
 
 /* ─── Fase 1: Botones ─────────────────────────────────────────────────── */
 

@@ -20,12 +20,13 @@
   --accent-soft:   rgba(233, 196, 106, 0.14); /* halo/relleno tenue del acento */
   --accent-strong: #F3D58A;                   /* brillo para las cifras héroe */
 
-  /* Aviso (días de "máximo" sin marcar, penalizaciones) */
-  --warn: #F59E0B;
+  /* Aviso (días de "máximo" sin marcar) y peligro (límite superado) */
+  --warn:   #F59E0B;
+  --danger: #EF4444;
 
-  /* Tipografía: Space Grotesk para cifras/display, Inter para el cuerpo */
+  /* Tipografía: Space Grotesk en toda la app (display y cuerpo) */
   --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-body:    'Inter', system-ui, sans-serif;
+  --font-body:    'Space Grotesk', system-ui, sans-serif;
 
   /* Escala de espaciado (múltiplos de 4) */
   --space-1: 4px;
@@ -50,7 +51,6 @@
   color-scheme: dark;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'cv05' 1; /* Inter: 'l' con cola, más legible */
 }
 
 /* Utilidad: cifras tabulares (cuadrículas y dinero cuadran en columnas) */

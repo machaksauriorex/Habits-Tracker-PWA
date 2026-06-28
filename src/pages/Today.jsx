@@ -36,8 +36,31 @@ function formatWeekLabel(days) {
   return `${fmt(days[0])} – ${fmt(days[6])}`
 }
 
-function formatSaldo(n) {
-  return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
+function formatNum(n) {
+  return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+// ── Helpers de color ──────────────────────────────────────────────────────────
+
+function hexA(hex, a) {
+  const n = parseInt(hex.slice(1), 16)
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`
+}
+
+/** Tinta legible (oscura o clara) según la luminancia del color de fondo. */
+function contrastInk(hex) {
+  const n = parseInt(hex.slice(1), 16)
+  const lum = 0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)
+  return lum > 150 ? 'rgba(8,18,28,.8)' : '#FFFFFF'
+}
+
+function Check({ ink }) {
+  return (
+    <svg width="12" height="9" viewBox="0 0 14 10" fill="none" stroke={ink}
+      strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="1,5 5,9 13,1" />
+    </svg>
+  )
 }
 
 // ── Componente de entrada numérica ───────────────────────────────────────────
@@ -47,7 +70,7 @@ function NumberModal({ habit, date, current, onSave, onCancel }) {
   return (
     <div className="confirm-overlay" onClick={onCancel}>
       <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
-        <h3>{habit.emoji} {habit.nombre}</h3>
+        <h3>{habit.emoji ? `${habit.emoji} ` : ''}{habit.nombre}</h3>
         <p style={{ color: 'var(--text-muted)', margin: '0 0 16px', fontSize: 13 }}>
           {new Date(date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
         </p>
@@ -79,7 +102,7 @@ function NumberModal({ habit, date, current, onSave, onCancel }) {
 
 // ── Today ────────────────────────────────────────────────────────────────────
 
-export default function Today() {
+export default function Today({ onNew }) {
   const [allHabits,  setAllHabits]  = useState([])
   const [phases,     setPhases]     = useState([])
   const [recMap,     setRecMap]     = useState({}) // 'habitId__date' → value
@@ -122,15 +145,43 @@ export default function Today() {
     return map
   }, [phases])
 
-  // Hucha calculada
-  const { saldo } = useMemo(() => {
-    if (!settings) return { saldo: 0 }
-    const registros = Object.entries(recMap).map(([key, value]) => {
+  const registros = useMemo(
+    () => Object.entries(recMap).map(([key, value]) => {
       const [habitId, date] = key.split('__')
       return { habitId, date, value }
-    })
+    }),
+    [recMap],
+  )
+
+  // Hucha calculada
+  const hucha = useMemo(() => {
+    if (!settings) return { saldo: 0, rachas: {}, movimientos: [] }
     return calcularHucha({ habitos: allHabits, fases: phases, registros, ajustes: settings, hoy })
-  }, [allHabits, phases, recMap, settings, hoy])
+  }, [allHabits, phases, registros, settings, hoy])
+  const saldo = hucha.saldo
+
+  // Aportación de HOY: cuánto suma la hucha gracias a lo marcado hoy
+  const deltaHoy = useMemo(() => {
+    if (!settings) return 0
+    const sinHoy = registros.filter(r => r.date !== hoy)
+    const saldoSinHoy = calcularHucha({ habitos: allHabits, fases: phases, registros: sinHoy, ajustes: settings, hoy }).saldo
+    return saldo - saldoSinHoy
+  }, [saldo, allHabits, phases, registros, settings, hoy])
+
+  // Aportación de ESTA SEMANA: cuánto suma la hucha gracias a lo marcado esta semana
+  const deltaSemana = useMemo(() => {
+    if (!settings) return 0
+    const semana = new Set(getWeekDays(0))
+    const sinSemana = registros.filter(r => !semana.has(r.date))
+    const saldoSinSemana = calcularHucha({ habitos: allHabits, fases: phases, registros: sinSemana, ajustes: settings, hoy }).saldo
+    return saldo - saldoSinSemana
+  }, [saldo, allHabits, phases, registros, settings, hoy])
+
+  // Mejor racha actual entre los hábitos
+  const mejorRacha = useMemo(
+    () => Object.values(hucha.rachas).reduce((mx, r) => Math.max(mx, r.actual), 0),
+    [hucha.rachas],
+  )
 
   // ── Acciones sobre registros ───────────────────────────────────────────────
 
@@ -174,25 +225,32 @@ export default function Today() {
 
     const phase = getActivePhase(ps, date)
     const trackingStart = ps[0]?.startDate
-    // Hábitos de "máximo": cada día ya pasado debe marcarse (aunque sea 0). Un día
-    // en blanco invalida la racha, así que se señala para que el usuario lo rellene.
+    // Hábitos de "máximo": cada día pasado debe marcarse (aunque sea 0); un día en
+    // blanco invalida la racha, así que se señala para que el usuario lo rellene.
     const missing = phase?.goalType === 'max'
       && !hasVal && !isFuture && !!trackingStart && date >= trackingStart
 
     let done = false
     if (habit.periodo === 'daily') {
-      // Diario: el día se cumple comparando su propio valor con el objetivo.
       if (hasVal && phase) {
         done = phase.goalType === 'min' ? value >= phase.goalValue : value <= phase.goalValue
       }
     } else {
-      // Semanal/mensual: el día se pinta "cumplido" cuando TODO el periodo
-      // (la semana/el mes que lo contiene) ya está cumplido.
       const info = getPeriodInfo(habit, ps, recMap, date, hoy)
       done = !!info?.cumplido
     }
 
     return { value, hasVal, done, isFuture, missing }
+  }
+
+  function habitSubtitle(habit, activePhase, periodInfo) {
+    if (habit.periodo !== 'daily' && periodInfo) {
+      const lim = periodInfo.goalType === 'max' ? '≤' : ''
+      return `${lim}${periodInfo.total}/${periodInfo.goal} ${PERIODO_LABELS[habit.periodo].toLowerCase()}`
+    }
+    if (habit.tipo === 'boolean') return 'Diario'
+    if (!activePhase) return 'Diario'
+    return `${activePhase.goalType === 'max' ? 'máx.' : 'mín.'} ${activePhase.goalValue}`
   }
 
   const activeHabits = allHabits.filter(h => h.status === 'active')
@@ -204,103 +262,154 @@ export default function Today() {
   if (dbError) {
     return (
       <div className="today-page">
-        <p className="loading-text" style={{ color: '#ef4444' }}>{dbError}</p>
+        <p className="loading-text" style={{ color: 'var(--warn)' }}>{dbError}</p>
       </div>
     )
   }
 
   return (
     <div className="today-page">
-      {/* Cabecera con saldo */}
+      {/* Cabecera con saldo (héroe) */}
       <header className="today-header">
-        <div>
-          <p className="saldo-label">Hucha</p>
-          <p className="saldo-valor">{formatSaldo(saldo)}</p>
+        <p className="saldo-label">Saldo acumulado</p>
+        <div className="saldo-amount">
+          <span className="saldo-num tnum">{formatNum(saldo)}</span>
+          <span className="saldo-cur">€</span>
         </div>
+        {(() => {
+          const parts = []
+          if (deltaHoy > 0.0001) {
+            parts.push(<span key="h" className="saldo-delta tnum">↑ +{formatNum(deltaHoy)} € hoy</span>)
+          }
+          if (deltaSemana > 0.0001) {
+            parts.push(<span key="w" className="saldo-week tnum">+{formatNum(deltaSemana)} € esta semana</span>)
+          }
+          if (mejorRacha > 0) {
+            parts.push(<span key="r" className="saldo-racha">racha · {mejorRacha} {mejorRacha === 1 ? 'día' : 'días'}</span>)
+          }
+          if (!parts.length) return null
+          return (
+            <div className="saldo-sub">
+              {parts.flatMap((p, i) => i === 0 ? [p] : [<span key={`dot${i}`} className="saldo-dot" />, p])}
+            </div>
+          )
+        })()}
       </header>
 
-      {/* Navegación de semana */}
-      <div className="week-nav">
-        <button className="btn-ghost btn-sm" onClick={() => setWeekOffset(o => o - 1)}>←</button>
-        <span className="week-label">
-          {weekOffset === 0 ? 'Esta semana' : formatWeekLabel(weekDays)}
-        </span>
-        <button
-          className="btn-ghost btn-sm"
-          onClick={() => setWeekOffset(o => o + 1)}
-          disabled={weekOffset >= 0}
-        >
-          →
-        </button>
-      </div>
-
-      {/* Cabecera de días */}
+      {/* Cabecera de días con navegación discreta de semana */}
       <div className="grid-header">
-        <div className="habit-label-col" />
-        {weekDays.map(date => (
-          <div key={date} className={`day-col-header${date === hoy ? ' today' : ''}`}>
-            {DAY_INITIALS[new Date(date + 'T12:00:00').getDay()]}
-          </div>
-        ))}
+        <div className="week-stepper">
+          <button className="week-arrow" onClick={() => setWeekOffset(o => o - 1)} aria-label="Semana anterior">‹</button>
+          <span className="week-label">
+            {weekOffset === 0 ? 'Esta semana' : formatWeekLabel(weekDays)}
+          </span>
+          <button
+            className="week-arrow"
+            onClick={() => setWeekOffset(o => o + 1)}
+            disabled={weekOffset >= 0}
+            aria-label="Semana siguiente"
+          >
+            ›
+          </button>
+        </div>
+        <div className="day-track">
+          {weekDays.map(date => (
+            <div key={date} className={`day-col-header${date === hoy ? ' today' : ''}`}>
+              {DAY_INITIALS[new Date(date + 'T12:00:00').getDay()]}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Lista de hábitos */}
       {activeHabits.length === 0 ? (
-        <div className="empty-state" style={{ padding: '40px 24px' }}>
-          <p>No tienes hábitos activos.</p>
-          <p>Ve a <strong>Ajustes</strong> para crear el primero.</p>
+        <div className="empty-state" style={{ padding: '48px 24px' }}>
+          <p>Aún no hay hábitos.</p>
+          <p>Toca el botón <strong>+</strong> para crear el primero.</p>
         </div>
       ) : (
-        <ul className="habit-rows">
+        <ul className="habit-list">
           {activeHabits.map(habit => {
             const ps = phasesByHabit[habit.id] ?? []
-            // Progreso del periodo de la SEMANA VISIBLE (no siempre la actual)
-            const progress = habit.periodo !== 'daily'
+            const activePhase = getActivePhase(ps, hoy)
+            const periodInfo = habit.periodo !== 'daily'
               ? getPeriodInfo(habit, ps, recMap, weekDays[0], hoy)
               : null
+            const subtitle = habitSubtitle(habit, activePhase, periodInfo)
+            // Máximo superado en la semana visible → se marca la semana como incumplida
+            const failed = !!periodInfo && periodInfo.goalType === 'max' && periodInfo.total > periodInfo.goal
 
             return (
-              <li key={habit.id} className="habit-row">
-                {/* Nombre del hábito */}
+              <li key={habit.id} className="habit-card">
+                <span className="habit-bar" style={{ background: habit.color }} />
                 <div className="habit-label-col">
-                  <span className="habit-row-dot" style={{ background: habit.color }} />
                   <div className="habit-row-text">
                     <span className="habit-row-name">
                       {habit.emoji ? `${habit.emoji} ${habit.nombre}` : habit.nombre}
                     </span>
-                    {progress && (
-                      <span className="period-progress">
-                        {progress.goalType === 'max' ? '≤' : ''}{progress.total}/{progress.goal} {PERIODO_LABELS[habit.periodo].toLowerCase()}
-                      </span>
-                    )}
+                    <span className="habit-row-sub">{subtitle}</span>
                   </div>
                 </div>
 
                 {/* Celdas de días */}
-                {weekDays.map(date => {
-                  const { value, hasVal, done, isFuture, missing } = cellInfo(habit, date)
+                <div className={`day-track${failed ? ' failed' : ''}`}>
+                  {weekDays.map(date => {
+                    const { value, hasVal, done, isFuture, missing } = cellInfo(habit, date)
+                    const color = habit.color
+                    const isBool = habit.tipo === 'boolean'
 
-                  return (
-                    <button
-                      key={date}
-                      className={[
-                        'day-cell',
-                        done ? 'done' : hasVal ? 'partial' : missing ? 'missing' : '',
-                        date === hoy ? 'today' : '',
-                        isFuture ? 'inactive' : '',
-                      ].filter(Boolean).join(' ')}
-                      style={done ? { background: habit.color, borderColor: habit.color } : missing ? undefined : { borderColor: habit.color + '55' }}
-                      onClick={() => !isFuture && handleCellTap(habit, date)}
-                      disabled={isFuture}
-                    >
-                      {habit.tipo === 'quantitative' && hasVal ? value : missing ? '0?' : ''}
-                    </button>
-                  )
-                })}
+                    let variant = 'empty'
+                    let style
+                    let content = null
+
+                    if (isFuture) {
+                      variant = 'future'
+                    } else if (done) {
+                      variant = 'done'
+                      style = { background: color, borderColor: color }
+                      content = isBool
+                        ? <Check ink={contrastInk(color)} />
+                        : <span style={{ color: contrastInk(color) }}>{value}</span>
+                    } else if (hasVal) {
+                      variant = 'partial'
+                      style = { background: hexA(color, 0.30), borderColor: 'transparent' }
+                      content = isBool ? null : <span style={{ color: 'rgba(255,255,255,.78)' }}>{value}</span>
+                    } else if (missing) {
+                      variant = 'missing'
+                      content = '0?'
+                    }
+
+                    return (
+                      <button
+                        key={date}
+                        className={[
+                          'day-cell', variant,
+                          date === hoy ? 'today' : '',
+                        ].filter(Boolean).join(' ')}
+                        style={style}
+                        onClick={() => !isFuture && handleCellTap(habit, date)}
+                        disabled={isFuture}
+                      >
+                        {content}
+                      </button>
+                    )
+                  })}
+                </div>
               </li>
             )
           })}
         </ul>
+      )}
+
+      {/* Botón flotante para crear hábito */}
+      {onNew && (
+        <button className="fab" onClick={onNew} aria-label="Nuevo hábito">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#14161A"
+            strokeWidth="2.5" strokeLinecap="round">
+            <line x1="11" y1="3" x2="11" y2="19" />
+            <line x1="3" y1="11" x2="19" y2="11" />
+          </svg>
+        </button>
       )}
 
       {numModal && (

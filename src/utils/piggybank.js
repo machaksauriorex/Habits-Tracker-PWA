@@ -133,7 +133,7 @@ function getPeriods(habito, hoy, start) {
  * alcanzar el total (los días sin marcar cuentan como 0).
  * `days` (opcional) acota el rango activo a [startDate, startDate+days-1].
  */
-function evalPeriodo(habito, period, recMap, phase, hoy) {
+function evalPeriodo(habito, period, recMap, phase, hoy, requireFrom = period.startDate) {
   const lastActive = period.days != null
     ? addDays(period.startDate, period.days - 1)
     : period.endDate
@@ -144,7 +144,7 @@ function evalPeriodo(habito, period, recMap, phase, hoy) {
     const val = recMap[`${habito.id}__${d}`]
     if (val !== undefined) {
       total += habito.tipo === 'boolean' ? (val ? 1 : 0) : Number(val)
-    } else if (!hoy || d <= hoy) {
+    } else if (d >= requireFrom && (!hoy || d <= hoy)) {
       faltan++
     }
     d = addDays(d, 1)
@@ -181,13 +181,13 @@ export function getPeriodInfo(habito, phases, recMap, refDate, hoy) {
     periodEnd   = `${y}-${pad2(m)}-${pad2(daysInMonth(y, m))}`
   }
 
-  // Acota el inicio activo al comienzo del seguimiento (primera fase): no se
-  // exigen días anteriores a que existiera el hábito.
+  // El total cuenta todos los registros del periodo, pero NO se exigen (faltan)
+  // días anteriores al comienzo del seguimiento (primera fase).
   const trackingStart = sortedPhases[0].startDate
-  const activeStart = periodStart < trackingStart ? trackingStart : periodStart
+  const requireFrom = periodStart < trackingStart ? trackingStart : periodStart
 
   const { cumplido, total, faltan } = evalPeriodo(
-    habito, { startDate: activeStart, endDate: periodEnd }, recMap, phase, today)
+    habito, { startDate: periodStart, endDate: periodEnd }, recMap, phase, today, requireFrom)
   const abierto = periodEnd >= today
   // El "cumplido visual" sigue la misma regla que la hucha: el "máximo" no se da
   // por cumplido hasta cerrar el periodo (aún podría superarse).

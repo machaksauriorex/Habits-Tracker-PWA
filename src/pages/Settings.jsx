@@ -186,6 +186,10 @@ export default function Settings({ onNew, onEdit }) {
         </div>
       </div>
 
+      <div className="settings-brand">
+        <img src={`${import.meta.env.BASE_URL}brand/piggyto-logo-dark.svg`} alt="Piggyto" />
+      </div>
+
       {edit === 'base' && (
         <EditModal
           title="Base diaria"

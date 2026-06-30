@@ -10,10 +10,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'icon-source.svg', 'apple-touch-icon-180x180.png'],
+      includeAssets: ['favicon.ico', 'brand/piggyto-appicon.svg', 'apple-touch-icon-180x180.png'],
       manifest: {
-        name: 'Hábitos con Hucha',
-        short_name: 'Hábitos',
+        name: 'Piggyto',
+        short_name: 'Piggyto',
         description: 'Sigue tus hábitos y llena tu hucha virtual',
         theme_color: '#14161A',
         background_color: '#14161A',

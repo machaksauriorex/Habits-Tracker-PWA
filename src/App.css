@@ -170,7 +170,7 @@
   padding: 0 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .habit-card {
@@ -193,19 +193,20 @@
   min-width: 0;
   display: flex;
   align-items: center;
-  padding: 12px 8px 12px 14px;
+  padding: 5px 8px 5px 14px;
 }
 
 .habit-row-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
   min-width: 0;
 }
 
 .habit-row-name {
   font-size: 14px;
   font-weight: 600;
+  line-height: 1.25;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
@@ -214,6 +215,7 @@
 
 .habit-row-sub {
   font-size: 11px;
+  line-height: 1.2;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
@@ -1440,11 +1442,22 @@ button { font-family: inherit; }
 
 /* ─── Fase 6: Animaciones y pulido ───────────────────────────────────────── */
 
-/* Transición al cambiar de pestaña (el wrapper se remonta con key={tab}) */
-.page-fade { animation: pageIn 0.3s cubic-bezier(.22,.61,.36,1) both; }
+/* Logo de marca al pie de Ajustes */
+.settings-brand {
+  display: flex;
+  justify-content: center;
+  padding: 28px 0 12px;
+  opacity: 0.9;
+}
+.settings-brand img { height: 32px; width: auto; }
+
+/* Transición al cambiar de pestaña (el wrapper se remonta con key={tab}).
+   Solo opacidad: NO animar transform (dejaría una matriz identidad que crea
+   un containing block y descoloca los position:fixed como el FAB). */
+.page-fade { animation: pageIn 0.3s ease both; }
 @keyframes pageIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* Toast: entrada desde abajo */

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { DndContext, closestCenter, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { getHabits, getAllPhases, getAllRecords, getSettings, upsertRecord, deleteRecord, reorderHabits } from '../db/index.js'
@@ -144,10 +144,12 @@ export default function Today({ onNew }) {
   const weekDays = useMemo(() => getWeekDays(weekOffset), [weekOffset])
   const hoy      = todayStr()
 
-  // Arrastre para reordenar: hay que MANTENER PULSADO ~220ms antes de arrastrar,
-  // así los toques rápidos en las celdas siguen funcionando como marcado.
+  // Arrastre para reordenar. En móvil (TouchSensor) hay que MANTENER PULSADO
+  // ~200ms antes de arrastrar, así los toques rápidos en las celdas siguen
+  // marcando. En escritorio (MouseSensor) arrastra tras un pequeño desplazamiento.
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { delay: 220, tolerance: 8 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } }),
   )
 
   // Carga inicial de todos los datos
